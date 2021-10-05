@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'dart:developer';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -12,8 +13,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var server = IpfoamServer();
+    log("Patatas");
+    server.getCids(["mstfwyya", "isw76vwa", "x77cl54q", "TYPEpwqlajqq"]);
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: ' Demo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -51,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  dynamic note = {};
 
   void _incrementCounter() {
     setState(() {
@@ -98,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'IID:',
             ),
             Text(
               '$_counter',
@@ -117,5 +123,84 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class IpfoamServer {
+  Future<void> getCids(List<String> iids) async {
+    if (iids.isEmpty) return;
+    var iidsEndPoint =
+        "https://ipfoam-server-dc89h.ondigitalocean.app/iids/" + iids.join(",");
+    var result = await http.get(Uri.parse(iidsEndPoint));
+    Map<String, dynamic> body = json.decode(result.body);
+    Map<String, dynamic> cids = body["data"]["cids"];
+    Map<String, dynamic> blocks = body["data"]["blocks"];
+    List<String> dependencies = [];
+    (cids as Map<String, dynamic>).forEach((iid, cid) {
+      log(iid + " - " + cid);
+      if (blocks[cid] != "") {
+        Map<String, dynamic> block = blocks[cid];
+        Repos.loadNote(iid, cid, block);
+        dependencies.addAll(getBlockDependencies(block));
+      }
+    });
+    log(dependencies.toString());
+    getCids(dependencies);
+  }
 
+  List<String> getBlockDependencies(Map<String, dynamic> block) {
+    List<String> dependencies = [];
+
+    block.forEach((key, value) {
+      dependencies.add(key);
+    });
+    return dependencies;
+  }
 }
+
+class NoteWrap {
+  String iid;
+  String cid;
+  Map<String, Object> block = {};
+
+  NoteWrap(this.iid, this.cid, Map<String, Object> block);
+
+  NoteWrap.fromJSONU(this.iid, this.cid, String JsonBlock) {
+    block = json.decode(JsonBlock) as Map<String, Object>;
+  }
+}
+
+class NoteType {
+  String iid;
+  String cid;
+  String? defaultName;
+  String? represents;
+  List<String>? constrains;
+  String? ipldSchema;
+
+  NoteType(this.iid, this.cid, Map<String, Object> block) {
+    defaultName = block["defaultName"] as String;
+    represents = block["represents"] as String;
+    constrains = block["constrains"] as List<String>;
+    ipldSchema = block["ipldSchema"] as String;
+  }
+}
+
+class Repos {
+  static Map<String, dynamic> cids = {};
+  static Map<String, dynamic> blocks = {};
+
+  static void loadNote(String iid, String cid, dynamic block) {
+    cids[iid] = cid;
+    blocks[cid] = block;
+  }
+}
+
+class Runtime {
+  Map<String, DateTime> requests = {};
+
+  getFromIpfs() {}
+  getFromMind() {}
+  getFromLocal() {}
+
+  void requestCids(List<String> iids) {}
+}
+
+typedef InterplantearyText = List<String>;
+typedef NoteRequester = Function(List<String>);
