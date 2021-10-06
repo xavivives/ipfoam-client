@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'dart:convert';
+import 'package:ipfoam_client/interplanetary_text_transform.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,12 +15,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var server = IpfoamServer();
-    log("Patatas");
+
     server.getCids(["mstfwyya", "isw76vwa", "x77cl54q", "TYPEpwqlajqq"]);
 
     return MaterialApp(
       title: ' Demo',
       theme: ThemeData(
+        fontFamily: 'OpenSans',
         // This is the theme of your application.
         //
         // Try running your application with "flutter run". You'll see the
@@ -78,47 +80,20 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'IID:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: Padding(
+            padding: const EdgeInsets.all(40),
+            child: InterplanetaryTextTransform(ipt: const [
+              "Is a 1979 book by ",
+              "[\"m2u2cyfa/pwqlajqq\"]",
+              " that proposes a new theory of architecture (and design in general) that relies on the understanding and configuration of design patterns. Although it came out later, it is essentially the introduction to ",
+              "[\"n2sd3asq/pwqlajqq\"]",
+              " and The Oregon Experiment,"
+            ], accessibleNotes: [])));
   }
 }
 
@@ -133,7 +108,6 @@ class IpfoamServer {
     Map<String, dynamic> blocks = body["data"]["blocks"];
     List<String> dependencies = [];
     (cids as Map<String, dynamic>).forEach((iid, cid) {
-      log(iid + " - " + cid);
       if (blocks[cid] != "") {
         Map<String, dynamic> block = blocks[cid];
         Repos.loadNote(iid, cid, block);
@@ -199,7 +173,7 @@ class Runtime {
   getFromMind() {}
   getFromLocal() {}
 
-  void requestCids(List<String> iids) {}
+  void requestAbstraction(List<String> iids) {}
 }
 
 typedef InterplantearyText = List<String>;
