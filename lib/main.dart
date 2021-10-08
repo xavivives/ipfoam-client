@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   dynamic note = {};
 
-  void _incrementCounter() {
+  void incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -73,6 +73,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    const str3 = [
+      "Is a 1979 book by ",
+      "[\"m2u2cyfa/pwqlajqq\"]",
+      " that proposes a new theory of architecture (and design in general) that relies on the understanding and configuration of design patterns. Although it came out later, it is essentially the introduction to ",
+      "[\"n2sd3asq/pwqlajqq\"]",
+      " and The Oregon Experiment,"
+          "[\"x77cl54q/pwqlajqq\"]",
+      "[\"TYPEpwqlajqq\"]"
+    ];
+    const str1 = [
+      "[\"baguqeeraqmhjimttqkfw6xwzwflc57vla4jone6is3dfn5lf4terbxsj4cdq\"]",
+      "[\"baguqeerascthaxcbfhb6cfzq36a3qibhxayiuhq7i6moy6bylgu6s4jr4z4q\"]",
+      "[\"baguqeeralapclcswssawoyuwqpb7ghpszfcaw4bi3wt7nmnv6bqypwqlajqq\"]",
+      "[\"baguqeeraculrztrg66wun5z4he3qk6ufv3evalphmi7zjita342ae2ptefia\"]",
+      "[\"baguqeerauaki4hckr6xyrj6gk5rt7xe76xo4mhpnr7zy3r7krlluzkrrxnta\"]",
+      "[\"baguqeerawhkesgkfn6fkj2yoga2uaqclgwslkxa3yyx46vf7mkuzcwi7dj5q\"]",
+      "[\"baguqeerajxox2lwmztmjrz7vxywwr47c4ynkattrktbdetp7fz7x23qo4fua\"]",
+      "[\"baguqeeraxbwfigx2sawjonxkx467pifbvcd5jjcmihroe6nplwh7avzlrroa\"]",
+    ];
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -87,13 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Padding(
             padding: const EdgeInsets.all(40),
-            child: InterplanetaryTextTransform(ipt: const [
-              "Is a 1979 book by ",
-              "[\"m2u2cyfa/pwqlajqq\"]",
-              " that proposes a new theory of architecture (and design in general) that relies on the understanding and configuration of design patterns. Although it came out later, it is essentially the introduction to ",
-              "[\"n2sd3asq/pwqlajqq\"]",
-              " and The Oregon Experiment,"
-            ], accessibleNotes: [])));
+            child: InterplanetaryTextTransform(ipt: str1)));
   }
 }
 
@@ -110,7 +123,7 @@ class IpfoamServer {
     (cids as Map<String, dynamic>).forEach((iid, cid) {
       if (blocks[cid] != "") {
         Map<String, dynamic> block = blocks[cid];
-        Repos.loadNote(iid, cid, block);
+        Repo.loadNote(iid, cid, block);
         dependencies.addAll(getBlockDependencies(block));
       }
     });
@@ -129,14 +142,14 @@ class IpfoamServer {
 }
 
 class NoteWrap {
-  String iid;
-  String cid;
-  Map<String, Object> block = {};
+  String? iid;
+  String? cid;
+  Map<String, dynamic>? block = {};
 
-  NoteWrap(this.iid, this.cid, Map<String, Object> block);
+  NoteWrap({this.iid, this.cid, this.block});
 
-  NoteWrap.fromJSONU(this.iid, this.cid, String JsonBlock) {
-    block = json.decode(JsonBlock) as Map<String, Object>;
+  NoteWrap.fromJSONU(this.iid, this.cid, String jsonBlock) {
+    block = json.decode(jsonBlock) as Map<String, dynamic>;
   }
 }
 
@@ -156,13 +169,35 @@ class NoteType {
   }
 }
 
-class Repos {
+class Repo {
   static Map<String, dynamic> cids = {};
-  static Map<String, dynamic> blocks = {};
+  static Map<String, NoteWrap> blocks = {};
 
   static void loadNote(String iid, String cid, dynamic block) {
     cids[iid] = cid;
-    blocks[cid] = block;
+    blocks[cid] = NoteWrap(iid: iid, cid: cid, block: block);
+  }
+
+  static NoteWrap getNotebyCid(String cid) {
+    return blocks[cid] ??= NoteWrap(cid: cid);
+  }
+
+  static NoteWrap getNoteByIid(String iid) {
+    if (cids[iid] != null) {
+      return Repo.getNotebyCid(cids[iid]);
+    }
+    return NoteWrap(iid: iid);
+  }
+
+  static NoteWrap getNoteByAref(AbstractionReference aref) {
+    if (aref.cid != null) {
+      return getNotebyCid(aref.cid!);
+    }
+    if (aref.iid != null) {
+      return getNoteByIid(aref.iid!);
+    } else {
+      return NoteWrap();
+    }
   }
 }
 
@@ -178,3 +213,40 @@ class Runtime {
 
 typedef InterplantearyText = List<String>;
 typedef NoteRequester = Function(List<String>);
+
+class AbstractionReference {
+  String? mid;
+  String? iid;
+  List<String>? path;
+  String? cid;
+  late String origin; // "mid:iid" or "cid"
+  static String midToIidToken = ":";
+  static String pathToken = "/";
+  static String midPlaceholder = "x";
+
+  //An abstraction reference has the signature "mid:iid/prop/path/" or "cid/prop/path"
+
+  AbstractionReference.fromText(String text) {
+    var t = text.split(AbstractionReference.pathToken);
+    origin = t[0]; // "mid:iid" or "cid"
+    path = t..removeAt(0);
+
+    //if there is no token we can assume is a CID. Except whie mids are not implemented
+    var o = origin.split(AbstractionReference.midToIidToken);
+
+    if (o.length == 1) {
+      if (o[0].length > 12) {
+        cid = o[0];
+      } else {
+        //Current version without mid
+        mid = AbstractionReference.midPlaceholder;
+        iid = o[0];
+      }
+    } else if (o.length == 2) {
+      mid = o[0];
+      iid = o[1];
+    } else {
+      log("Error parssing expression:" + text);
+    }
+  }
+}
