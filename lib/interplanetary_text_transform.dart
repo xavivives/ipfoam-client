@@ -1,38 +1,77 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
+import 'package:ipfoam_client/color_utils.dart';
 import 'package:ipfoam_client/main.dart';
 import 'dart:convert';
 
 class InterplanetaryTextTransform extends StatelessWidget {
   InterplantearyText ipt;
-  List<NoteWrap> accessibleNotes;
   NoteRequester? requester;
 
-  InterplanetaryTextTransform(
-      {required this.ipt, required this.accessibleNotes, this.requester}) {}
+  InterplanetaryTextTransform({required this.ipt, this.requester}) {}
 
-  TextSpan decode(String element) {
-    var str = element;
-    if (element.indexOf("[") == 0 &&
-        element.indexOf("]") == element.length - 1) {
+  TextSpan decode(String run) {
+    log("decding " + run);
+    var str = run;
+    var arefOrigin;
+    if (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1) {
       List<dynamic> expr = json.decode(str);
-      //todo parse instead
-      str = expr.join();
+      //Todo check if there is a nested transclusion
+      if (expr.length == 1) {
+        //Static transclusion
+        var aref = AbstractionReference.fromText(expr[0]);
+        arefOrigin = aref.origin;
+        str = getTranscludedText(aref);
+      } else if (expr.length > 1) {
+        //dynamic transclusion
+      }
+
+      log("got" + str);
 
       return TextSpan(
           text: str,
-          style:
-              const TextStyle(color: Colors.red, fontWeight: FontWeight.w400));
+          style: TextStyle(
+              color: Colors.white,
+              //backgroundColor: Colors.yellow,
+              fontWeight: FontWeight.w400,
+              background: Paint()
+                ..strokeWidth = 10.0
+                ..color = getBackgroundColor(arefOrigin)
+                ..style = PaintingStyle.fill
+
+                // ..style = PaintingStyle.fill
+                ..strokeJoin = StrokeJoin.round));
     }
     return TextSpan(
         text: str,
         style: const TextStyle(
           fontWeight: FontWeight.w300,
         ));
+  }
+
+  /*String getTranscludedText(AbstractionReference aref) {
+    if (accessibleNotes[aref.origin] == null) {
+      return aref.origin;
+    } else {
+      if (accessibleNotes[aref.origin]?.block?[aref.path?[0]] == null) {
+        return aref.origin;
+      } else {
+        return accessibleNotes[aref.origin]?.block?[aref.path?[0]] as String;
+      }
+    }
+  }*/
+
+  String getTranscludedText(AbstractionReference aref) {
+    var note = Repo.getNoteByAref(aref);
+    if (note.block != null) {
+      if (note.block![aref.path] != null) {
+        if (note.block![aref.path![0]] != null) {
+          return note.block![aref.path![0]] as String;
+        }
+      }
+    }
+    return aref.origin;
   }
 
   @override
