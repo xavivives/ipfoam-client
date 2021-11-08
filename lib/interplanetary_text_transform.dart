@@ -12,7 +12,6 @@ class InterplanetaryTextTransform extends StatelessWidget {
   InterplanetaryTextTransform({required this.ipt, this.requester}) {}
 
   TextSpan decode(String run) {
-    log("decding " + run);
     var str = run;
     var arefOrigin;
     if (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1) {
@@ -32,7 +31,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
       return TextSpan(
           text: str,
           style: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               //backgroundColor: Colors.yellow,
               fontWeight: FontWeight.w400,
               background: Paint()

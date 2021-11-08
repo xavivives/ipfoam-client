@@ -21,13 +21,13 @@ double strToHue(String base32Source) {
 }
 
 Color getBackgroundColor(String source) {
-  double saturation = 0.8;
-  double lightness = 0.4;
+  double saturation = 0.5;
+  double lightness = 0.75;
   double hue = strToHue(source);
   HSLColor hsl = HSLColor.fromAHSL(1, hue, saturation, lightness);
   Color rgb = hsl.toColor();
   Color tint = Colors.orange;
-  Color tinted = dye(rgb, tint, 0.3);
+  Color tinted = dye(rgb, tint, 0.2);
   return tinted;
 }
 
