@@ -6,6 +6,7 @@ import 'package:ipfoam_client/main.dart';
 import 'dart:convert';
 
 import 'package:ipfoam_client/repo.dart';
+import 'package:ipfoam_client/note.dart';
 
 class InterplanetaryTextTransform extends StatelessWidget {
   InterplantearyText ipt;
@@ -76,7 +77,8 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
 
     if (cid != null) {
-      note = Repo.getNoteWrapByCid(cid).note;
+      var noteWrap = Repo.getNoteWrapByCid(cid);
+      note = noteWrap.note;
     }
 
     if (note == null) {

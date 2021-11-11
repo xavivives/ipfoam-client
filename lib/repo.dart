@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ipfoam_client/main.dart';
+import 'package:ipfoam_client/note.dart';
 
 class Repo {
   static Map<String, CidWrap> cids = {};
@@ -9,12 +9,21 @@ class Repo {
   static void addNoteForCid(String cid, Note? note) {
     cids[cid] ??= CidWrap(cid);
     cids[cid]?.note = note;
+    if (note == null)
+      cids[cid]?.status = RequestStatus.missing;
+    else
+      cids[cid]?.status = RequestStatus.loaded;
     log("Added cid " + cid + " Status: " + cids[cid]!.status.toString());
   }
 
   static void addCidForIid(String iid, String? cid) {
     iids[iid] ??= IidWrap(iid);
     iids[iid]?.cid = cid;
+    if (cid == null) {
+      iids[iid]?.status = RequestStatus.missing;
+    } else {
+      iids[iid]?.status = RequestStatus.loaded;
+    }
     log("Added iid " + iid + " Status: " + iids[iid]!.status.toString());
   }
 
@@ -24,7 +33,7 @@ class Repo {
     {
       cids[cid]!.status = RequestStatus.needed;
     }
-    log("Returned not for cid " +
+    log("Returned note for cid " +
         cid +
         " Status: " +
         cids[cid]!.status.toString());
@@ -33,6 +42,7 @@ class Repo {
   }
 
   static IidWrap getCidWrapByIid(String iid) {
+    log("here");
     iids[iid] ??= IidWrap(iid);
     if (iids[iid]!.status == RequestStatus.undefined) ;
     {
@@ -48,7 +58,22 @@ class Repo {
   }
 }
 
-enum RequestStatus { undefined, needed, requested, loaded, invalid, failed }
+//undefined: default state. Is only in this state if no action has been done
+//needed: A Transform manifested it wants it. But no attempt of getting it  has been done
+//requested: It has been requested to an outside source but have not response yet
+//missing: The outside source has returned an emptty request , regardless of the reason. Should not expect the source to have it under the same conditions
+//loaded: Its loaded and stred in Repo
+//failed: The request failed (ex: connectivity issues).
+//invalid: The item requested or the content returned is invalid
+enum RequestStatus {
+  undefined,
+  needed,
+  requested,
+  missing,
+  loaded,
+  failed,
+  invalid
+}
 
 class CidWrap {
   DateTime? lastRequest;

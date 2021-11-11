@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'dart:convert';
 import 'package:ipfoam_client/interplanetary_text_transform.dart';
+import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/repo.dart';
 
 void main() {
@@ -116,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class IpfoamServer {
   static Future<void> requestIidsToLoad() async {
     List<String> iidsToLoad = [];
-    log("Server requesting " + iidsToLoad.toString());
+
     Repo.iids.forEach((iid, entry) {
       if (entry.status == RequestStatus.needed) {
         iidsToLoad.add(iid);
@@ -124,6 +125,7 @@ class IpfoamServer {
         entry.status == RequestStatus.requested;
       }
     });
+    log("Server requesting " + iidsToLoad.toString());
 
     if (iidsToLoad.isEmpty) return;
     var iidsEndPoint = "https://ipfoam-server-dc89h.ondigitalocean.app/iids/" +
@@ -140,59 +142,29 @@ class IpfoamServer {
         Note note = Note(cid: cid, block: block);
         Repo.addNoteForCid(cid, note);
         Repo.addCidForIid(iid, cid);
-        dependencies.addAll(IpfoamServer.getBlockDependencies(block));
+        dependencies.addAll(IpfoamServer.getIddTypesForBlock(block));
       }
     });
-    log(dependencies.toString());
+    log("Server over");
+    log("Dependencies: " + dependencies.toString());
+    log(Repo.iids["mstfwyya"]!.status.toString());
     // getCids(dependencies);
   }
 
-  static List<String> getBlockDependencies(Map<String, dynamic> block) {
-    List<String> dependencies = [];
+  static List<String> getIddTypesForBlock(Map<String, dynamic> block) {
+    List<String> typesIids = [];
 
     block.forEach((key, value) {
-      dependencies.add(key);
+      List<String> primitiveTypes = [
+        Note.primitiveConstrains,
+        Note.primitiveDefaultName,
+        Note.primitiveIpldSchema,
+        Note.primitiveRepresents
+      ];
+      if (primitiveTypes.contains(key) == false) typesIids.add(key);
     });
-    return dependencies;
+    return typesIids;
   }
-}
-
-class Note {
-  String cid;
-  Map<String, dynamic>? block = {};
-  //Bytes: bites//Todo, it could be arbitrary content theoretically
-
-  Note({required this.cid, this.block});
-
-  Note.fromJSONU(this.cid, String jsonBlock) {
-    block = json.decode(jsonBlock) as Map<String, dynamic>;
-  }
-}
-
-class NoteType {
-  String iid;
-  String cid;
-  String? defaultName;
-  String? represents;
-  List<String>? constrains;
-  String? ipldSchema;
-
-  NoteType(this.iid, this.cid, Map<String, Object> block) {
-    defaultName = block["defaultName"] as String;
-    represents = block["represents"] as String;
-    constrains = block["constrains"] as List<String>;
-    ipldSchema = block["ipldSchema"] as String;
-  }
-}
-
-class Runtime {
-  Map<String, DateTime> requests = {};
-
-  getFromIpfs() {}
-  getFromMind() {}
-  getFromLocal() {}
-
-  void requestAbstraction(List<String> iids) {}
 }
 
 typedef InterplantearyText = List<String>;
