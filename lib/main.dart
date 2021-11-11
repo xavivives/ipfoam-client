@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:developer';
 import 'dart:convert';
 import 'package:ipfoam_client/interplanetary_text_transform.dart';
+import 'package:ipfoam_client/repo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var server = IpfoamServer();
 
-    server.getCids(["mstfwyya", "isw76vwa", "x77cl54q", "TYPEpwqlajqq"]);
+    //server.getCids(["mstfwyya", "isw76vwa", "x77cl54q", "TYPEpwqlajqq"]);
+    Repo.getCidWrapByIid("mstfwyya");
+    IpfoamServer.requestIidsToLoad();
 
     return MaterialApp(
       title: ' Demo',
@@ -106,32 +109,45 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Padding(
             padding: const EdgeInsets.all(40),
-            child: InterplanetaryTextTransform(ipt: str1)));
+            child: InterplanetaryTextTransform(ipt: str3)));
   }
 }
 
 class IpfoamServer {
-  Future<void> getCids(List<String> iids) async {
-    if (iids.isEmpty) return;
-    var iidsEndPoint =
-        "https://ipfoam-server-dc89h.ondigitalocean.app/iids/" + iids.join(",");
+  static Future<void> requestIidsToLoad() async {
+    List<String> iidsToLoad = [];
+    log("Server requesting " + iidsToLoad.toString());
+    Repo.iids.forEach((iid, entry) {
+      if (entry.status == RequestStatus.needed) {
+        iidsToLoad.add(iid);
+        entry.lastRequest = DateTime.now();
+        entry.status == RequestStatus.requested;
+      }
+    });
+
+    if (iidsToLoad.isEmpty) return;
+    var iidsEndPoint = "https://ipfoam-server-dc89h.ondigitalocean.app/iids/" +
+        iidsToLoad.join(",");
     var result = await http.get(Uri.parse(iidsEndPoint));
     Map<String, dynamic> body = json.decode(result.body);
+    log(body.toString());
     Map<String, dynamic> cids = body["data"]["cids"];
     Map<String, dynamic> blocks = body["data"]["blocks"];
     List<String> dependencies = [];
     (cids as Map<String, dynamic>).forEach((iid, cid) {
       if (blocks[cid] != "") {
         Map<String, dynamic> block = blocks[cid];
-        Repo.loadNote(iid, cid, block);
-        dependencies.addAll(getBlockDependencies(block));
+        Note note = Note(cid: cid, block: block);
+        Repo.addNoteForCid(cid, note);
+        Repo.addCidForIid(iid, cid);
+        dependencies.addAll(IpfoamServer.getBlockDependencies(block));
       }
     });
     log(dependencies.toString());
-    getCids(dependencies);
+    // getCids(dependencies);
   }
 
-  List<String> getBlockDependencies(Map<String, dynamic> block) {
+  static List<String> getBlockDependencies(Map<String, dynamic> block) {
     List<String> dependencies = [];
 
     block.forEach((key, value) {
@@ -141,14 +157,14 @@ class IpfoamServer {
   }
 }
 
-class NoteWrap {
-  String? iid;
-  String? cid;
+class Note {
+  String cid;
   Map<String, dynamic>? block = {};
+  //Bytes: bites//Todo, it could be arbitrary content theoretically
 
-  NoteWrap({this.iid, this.cid, this.block});
+  Note({required this.cid, this.block});
 
-  NoteWrap.fromJSONU(this.iid, this.cid, String jsonBlock) {
+  Note.fromJSONU(this.cid, String jsonBlock) {
     block = json.decode(jsonBlock) as Map<String, dynamic>;
   }
 }
@@ -166,38 +182,6 @@ class NoteType {
     represents = block["represents"] as String;
     constrains = block["constrains"] as List<String>;
     ipldSchema = block["ipldSchema"] as String;
-  }
-}
-
-class Repo {
-  static Map<String, dynamic> cids = {};
-  static Map<String, NoteWrap> blocks = {};
-
-  static void loadNote(String iid, String cid, dynamic block) {
-    cids[iid] = cid;
-    blocks[cid] = NoteWrap(iid: iid, cid: cid, block: block);
-  }
-
-  static NoteWrap getNotebyCid(String cid) {
-    return blocks[cid] ??= NoteWrap(cid: cid);
-  }
-
-  static NoteWrap getNoteByIid(String iid) {
-    if (cids[iid] != null) {
-      return Repo.getNotebyCid(cids[iid]);
-    }
-    return NoteWrap(iid: iid);
-  }
-
-  static NoteWrap getNoteByAref(AbstractionReference aref) {
-    if (aref.cid != null) {
-      return getNotebyCid(aref.cid!);
-    }
-    if (aref.iid != null) {
-      return getNoteByIid(aref.iid!);
-    } else {
-      return NoteWrap();
-    }
   }
 }
 
@@ -248,5 +232,13 @@ class AbstractionReference {
     } else {
       log("Error parssing expression:" + text);
     }
+  }
+
+  bool isIid() {
+    return iid != null;
+  }
+
+  bool isCid() {
+    return cid != null;
   }
 }

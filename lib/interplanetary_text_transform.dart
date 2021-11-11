@@ -5,6 +5,8 @@ import 'package:ipfoam_client/color_utils.dart';
 import 'package:ipfoam_client/main.dart';
 import 'dart:convert';
 
+import 'package:ipfoam_client/repo.dart';
+
 class InterplanetaryTextTransform extends StatelessWidget {
   InterplantearyText ipt;
   NoteRequester? requester;
@@ -62,14 +64,29 @@ class InterplanetaryTextTransform extends StatelessWidget {
   }*/
 
   String getTranscludedText(AbstractionReference aref) {
-    var note = Repo.getNoteByAref(aref);
-    if (note.block != null) {
-      if (note.block![aref.path] != null) {
-        if (note.block![aref.path![0]] != null) {
-          return note.block![aref.path![0]] as String;
-        }
+    Note? note;
+    String? cid;
+    if (aref.isIid()) {
+      cid = Repo.getCidWrapByIid(aref.iid!).cid;
+    } else if (aref.isCid()) {
+      cid = aref.cid;
+    } else {
+      //unknown
+      return aref.origin;
+    }
+
+    if (cid != null) {
+      note = Repo.getNoteWrapByCid(cid).note;
+    }
+
+    if (note == null) {
+      return aref.origin;
+    } else if (note.block![aref.path] != null) {
+      if (note.block![aref.path![0]] != null) {
+        return note.block![aref.path![0]] as String;
       }
     }
+
     return aref.origin;
   }
 
