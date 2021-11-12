@@ -19,10 +19,43 @@ class NoteViewer extends StatelessWidget {
         note.toString();
   }
 
-  Widget buildPropertyRow(String key, String value) {
+  Widget buildPropertyRow(String typeIid, String content, Repo repo) {
+    Note? typeNote;
+    String propertyName = typeIid;
+    String? cid = repo.getCidWrapByIid(typeIid).cid;
+    if (cid != null) {
+      typeNote = repo.getNoteWrapByCid(cid).note;
+      if (typeNote != null) {
+        propertyName = typeNote.block![Note.primitiveDefaultName];
+      }
+    } else {}
+
     return Column(
-      children: [Text(key), Text(value)],
+      children: [
+        buildPropertyText(propertyName),
+        buildContent(typeNote, content)
+      ],
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
     );
+  }
+
+  Widget buildPropertyText(String typeIid) {
+    String str = typeIid;
+
+    return Text(str,
+        textAlign: TextAlign.left,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+            fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 20));
+  }
+
+  Widget buildContent(Note? typeNote, String content) {
+    return Text(content,
+        textAlign: TextAlign.left,
+        overflow: TextOverflow.visible,
+        style: const TextStyle(
+            fontWeight: FontWeight.normal, color: Colors.black, fontSize: 20));
   }
 
   @override
@@ -40,15 +73,17 @@ class NoteViewer extends StatelessWidget {
       return Text(getStatusText(iid, iidWrap.cid, cidWrap.note));
     }
 
-    List<Widget> items = [Text("Hello")];
+    List<Widget> items = [];
 
     cidWrap.note!.block!.forEach((key, value) {
-      log("key:" + key);
-      items.add(buildPropertyRow(key, value.toString()));
+      items.add(buildPropertyRow(key, value.toString(), repo));
     });
 
-    return ListView(
-        // padding: const EdgeInsets.all(8),
-        children: items);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView(
+          // padding: const EdgeInsets.all(8),
+          children: items),
+    );
   }
 }
