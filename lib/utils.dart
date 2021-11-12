@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ipfoam_client/note.dart';
 
 class Utils {
@@ -17,17 +19,28 @@ class Utils {
   }
 
   static bool cidIsValid(String cid) {
-    if (cid == "") return false;
+    if (cid == "") {
+      log("Invalid CID: " + cid);
+
+      return false;
+    }
     return true;
   }
 
   static bool iidIsValid(String iid) {
-    if (iid == "") return false;
+    if (iid == "") {
+      log("Invalid IID: " + iid);
+
+      return false;
+    }
     return true;
   }
 
   static bool blockIsValid(dynamic block) {
-    if (block != "") return false;
+    if (block == "") {
+      log("Invalid block");
+      return false;
+    }
     return true;
   }
 }

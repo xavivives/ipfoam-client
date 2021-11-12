@@ -13,6 +13,7 @@ class Repo with ChangeNotifier {
   Repo();
 
   void addNoteForCid(String cid, Note? note) {
+    log("addNoteForCid");
     if (Utils.cidIsValid(cid) == false) {
       throw ("Empty cid can't arrive here");
     }
@@ -36,7 +37,12 @@ class Repo with ChangeNotifier {
       iids[iid]?.status = RequestStatus.loaded;
     }
 
-    log("Added iid " + iid + " Status: " + iids[iid]!.status.toString());
+    log("Added iid " +
+        iid +
+        "CID: " +
+        cid +
+        " Status: " +
+        iids[iid]!.status.toString());
   }
 
   CidWrap getNoteWrapByCid(String cid) {
@@ -64,8 +70,7 @@ class Repo with ChangeNotifier {
         iid +
         " Status: " +
         iids[iid]!.status.toString());
-    if (iids[iid]!.status == RequestStatus.undefined) ;
-    {
+    if (iids[iid]!.status == RequestStatus.undefined) {
       iids[iid]!.status = RequestStatus.needed;
     }
 
