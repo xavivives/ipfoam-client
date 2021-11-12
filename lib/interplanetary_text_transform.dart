@@ -7,8 +7,9 @@ import 'dart:convert';
 
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
-
+/*
 class InterplanetaryTextTransform extends StatelessWidget {
+  
   InterplantearyText ipt;
   NoteRequester? requester;
 
@@ -114,3 +115,4 @@ class InterplanetaryTextTransform extends StatelessWidget {
     return text;
   }
 }
+  */  
