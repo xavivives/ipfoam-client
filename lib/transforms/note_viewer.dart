@@ -79,11 +79,15 @@ class NoteViewer extends StatelessWidget {
       items.add(buildPropertyRow(key, value.toString(), repo));
     });
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView(
+    return SizedBox(
+      width: 600,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
           // padding: const EdgeInsets.all(8),
-          children: items),
+          children: items,
+        ),
+      ),
     );
   }
 }
