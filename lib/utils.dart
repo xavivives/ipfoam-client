@@ -43,4 +43,17 @@ class Utils {
     }
     return true;
   }
+
+  static bool typeIsStruct(Note note) {
+    if (note.block != null) {
+      if (note.block![Note.primitiveIpldSchema] != null) {
+        if (note.block![Note.primitiveIpldSchema]
+            .toString()
+            .contains(Note.structTypeIdentifier)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }

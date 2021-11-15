@@ -5,6 +5,7 @@ class Note {
   static const String primitiveRepresents = "represents";
   static const String primitiveConstrains = "constrains";
   static const String primitiveIpldSchema = "ipldSchema";
+  static const String structTypeIdentifier = "type root struct {";
   String cid;
   Map<String, dynamic>? block = {};
   //Bytes: bites//Todo, it could be arbitrary content theoretically
