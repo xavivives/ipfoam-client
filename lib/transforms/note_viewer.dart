@@ -36,7 +36,7 @@ class NoteViewer extends StatelessWidget {
         child: Column(
       children: [
         buildPropertyText(propertyName),
-        buildContent(typeNote, content, repo)
+        buildContentByType(typeNote, content, repo)
       ],
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,15 +53,35 @@ class NoteViewer extends StatelessWidget {
             fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 20));
   }
 
-  Widget buildContent(Note? typeNote, dynamic content, Repo repo) {
-    if (typeNote != null) {
+  Widget buildContentByType(Note? typeNote, dynamic content, Repo repo) {
+    if (typeNote != null && typeNote.block != null) {
       if (Utils.typeIsStruct(typeNote)) {
         log(typeNote.block![Note.primitiveDefaultName] + " IN");
 
         return buildStruct(typeNote, content, repo);
+      } else if (typeNote.block![Note.primitiveConstrains] != null) {
+        if (Utils.getBasicType(typeNote) == Note.basicTypeString) {
+        } else if (Utils.getBasicType(typeNote) == Note.basicTypeString) {
+          return buildContentRaw(typeNote, content);
+        } else if (Utils.getBasicType(typeNote) ==
+            Note.basicTypeAbstractionReference) {
+          return buildContentRaw(typeNote, "Abstraction reference");
+        } else if (Utils.getBasicType(typeNote) ==
+            Note.basicTypeAbstractionReferenceList) {
+          return buildContentRaw(typeNote, "Abstraction reference list");
+        } else if (Utils.getBasicType(typeNote) == Note.basicTypeBoolean) {
+          return buildContentRaw(typeNote, "BOolean");
+        } else if (Utils.getBasicType(typeNote) == Note.basicTypeDate) {
+          return buildContentRaw(typeNote, "Date");
+        } else if (Utils.getBasicType(typeNote) ==
+            Note.basicTypeReferenceTypeEnm) {
+          return buildContentRaw(typeNote, "Basic reference type");
+        } else if (Utils.getBasicType(typeNote) == Note.basicTypeUrl) {
+          return buildContentRaw(typeNote, "");
+        }
       } else {
         log(typeNote.block![Note.primitiveDefaultName] + " OUT");
-        return buildContentForType(typeNote, content);
+        return buildContentRaw(typeNote, content);
       }
     }
     return Text(content.toString(),
@@ -71,7 +91,7 @@ class NoteViewer extends StatelessWidget {
             fontWeight: FontWeight.normal, color: Colors.black, fontSize: 20));
   }
 
-  Widget buildContentForType(Note? typeNote, dynamic content) {
+  Widget buildContentRaw(Note? typeNote, dynamic content) {
     return Text(content.toString(),
         textAlign: TextAlign.left,
         overflow: TextOverflow.visible,
@@ -128,6 +148,5 @@ class NoteViewer extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
       children: items,
     );
-    ;
   }
 }
