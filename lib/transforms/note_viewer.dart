@@ -1,9 +1,10 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
+import 'package:ipfoam_client/transforms/abstraction_reference_link.dart';
 import 'package:ipfoam_client/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -60,24 +61,38 @@ class NoteViewer extends StatelessWidget {
 
         return buildStruct(typeNote, content, repo);
       } else if (typeNote.block![Note.primitiveConstrains] != null) {
+        //STRING
         if (Utils.getBasicType(typeNote) == Note.basicTypeString) {
-        } else if (Utils.getBasicType(typeNote) == Note.basicTypeString) {
-          return buildContentRaw(typeNote, content);
-        } else if (Utils.getBasicType(typeNote) ==
+        }
+        //Abstraction reference link
+        else if (Utils.getBasicType(typeNote) ==
             Note.basicTypeAbstractionReference) {
-          return buildContentRaw(typeNote, "Abstraction reference");
-        } else if (Utils.getBasicType(typeNote) ==
+          return AbstractionReferenceLink(
+              aref: AbstractionReference.fromText(content.toString()));
+        }
+        //
+
+        // List of Abstraction reference links
+        else if (Utils.getBasicType(typeNote) ==
             Note.basicTypeAbstractionReferenceList) {
-          return buildContentRaw(typeNote, "Abstraction reference list");
+          List<AbstractionReferenceLink> items = [];
+          content.forEach((element) {
+            items.add(AbstractionReferenceLink(
+                aref: AbstractionReference.fromText(element.toString())));
+          });
+
+          return ListView(
+            // padding: const EdgeInsets.all(8),
+            children: items,
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+          );
         } else if (Utils.getBasicType(typeNote) == Note.basicTypeBoolean) {
           return buildContentRaw(typeNote, "BOolean");
         } else if (Utils.getBasicType(typeNote) == Note.basicTypeDate) {
           return buildContentRaw(typeNote, "Date");
-        } else if (Utils.getBasicType(typeNote) ==
-            Note.basicTypeReferenceTypeEnm) {
-          return buildContentRaw(typeNote, "Basic reference type");
         } else if (Utils.getBasicType(typeNote) == Note.basicTypeUrl) {
-          return buildContentRaw(typeNote, "");
+          return buildContentRaw(typeNote, "Url");
         }
       } else {
         log(typeNote.block![Note.primitiveDefaultName] + " OUT");

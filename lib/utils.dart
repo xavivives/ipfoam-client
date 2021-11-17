@@ -56,4 +56,15 @@ class Utils {
     }
     return false;
   }
+
+  static String? getBasicType(Note typeNote) {
+    //BasicType refers to hack to easly recognize a primitive type in the proof of concept. The first element of the constrain property of a propertyType is that type
+    if (typeNote.block != null &&
+        typeNote.block![Note.primitiveConstrains] != null &&
+        typeNote.block![Note.primitiveConstrains][0] != null) {
+      return typeNote.block![Note.primitiveConstrains][0];
+    } else {
+      return null;
+    }
+  }
 }
