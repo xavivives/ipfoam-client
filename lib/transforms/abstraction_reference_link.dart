@@ -14,7 +14,7 @@ class AbstractionReferenceLink extends StatelessWidget {
         textAlign: TextAlign.left,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 20));
+            fontWeight: FontWeight.normal, color: Colors.black, fontSize: 20));
   }
 
   @override
