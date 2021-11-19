@@ -87,8 +87,10 @@ class InterplanetaryTextTransform extends StatelessWidget {
 
     if (note == null) {
       return aref.origin;
-    } else if (note.block![aref.path] != null) {
-      if (note.block![aref.path![0]] != null) {
+    } else if (aref.path != null) {
+      //TODO. Only one element of the path is supported
+
+      if (aref.path!.length == 1 && note.block![aref.path![0]] != null) {
         return note.block![aref.path![0]] as String;
       }
     }
