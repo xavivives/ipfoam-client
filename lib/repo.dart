@@ -13,7 +13,7 @@ class Repo with ChangeNotifier {
   Repo();
 
   void addNoteForCid(String cid, Note? note) {
-    log("addNoteForCid");
+    //log("addNoteForCid");
     if (Utils.cidIsValid(cid) == false) {
       throw ("Empty cid can't arrive here");
     }
@@ -23,7 +23,7 @@ class Repo with ChangeNotifier {
       cids[cid]?.status = RequestStatus.missing;
     else
       cids[cid]?.status = RequestStatus.loaded;
-    log("Server. CID:" + cid + " Status: " + cids[cid]!.status.toString());
+    //log("Server. CID:" + cid + " Status: " + cids[cid]!.status.toString());
     notifyListeners();
   }
 
@@ -37,12 +37,7 @@ class Repo with ChangeNotifier {
       iids[iid]?.status = RequestStatus.loaded;
     }
 
-    log("Added iid " +
-        iid +
-        "CID: " +
-        cid +
-        " Status: " +
-        iids[iid]!.status.toString());
+    //log("Added iid " +iid +"CID: " +cid +" Status: " +iids[iid]!.status.toString());
   }
 
   CidWrap getNoteWrapByCid(String cid) {
@@ -51,7 +46,7 @@ class Repo with ChangeNotifier {
     }
 
     cids[cid] ??= CidWrap(cid);
-    log("Transform. CID:" + cid + " Status: " + cids[cid]!.status.toString());
+    //log("Transform. CID:" + cid + " Status: " + cids[cid]!.status.toString());
     if (cids[cid]!.status == RequestStatus.undefined) {
       cids[cid]!.status = RequestStatus.needed;
     }
@@ -66,18 +61,12 @@ class Repo with ChangeNotifier {
 
     iids[iid] ??= IidWrap(iid);
 
-    log("Transform start. IID: " +
-        iid +
-        " Status: " +
-        iids[iid]!.status.toString());
+    //log("Transform start. IID: " +iid +" Status: " + iids[iid]!.status.toString());
     if (iids[iid]!.status == RequestStatus.undefined) {
       iids[iid]!.status = RequestStatus.needed;
     }
 
-    log("Transform end. IID: " +
-        iid +
-        " Status: " +
-        iids[iid]!.status.toString());
+    //log("Transform end. IID: " +iid +" Status: " +iids[iid]!.status.toString());
     // TODO this does not belong here
     if (iids[iid]!.status == RequestStatus.needed) fetchIIds();
 
@@ -104,7 +93,7 @@ class Repo with ChangeNotifier {
         iidsToLoad.join(",");
     var result = await http.get(Uri.parse(iidsEndPoint));
     Map<String, dynamic> body = json.decode(result.body);
-    log(body.toString());
+    //log(body.toString());
     Map<String, dynamic> cids = body["data"]["cids"];
     Map<String, dynamic> blocks = body["data"]["blocks"];
     cids.forEach((iid, cid) {

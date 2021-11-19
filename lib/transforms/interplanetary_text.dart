@@ -7,25 +7,28 @@ import 'dart:convert';
 
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
-/*
+import 'package:provider/provider.dart';
+
 class InterplanetaryTextTransform extends StatelessWidget {
-  
-  InterplantearyText ipt;
-  NoteRequester? requester;
+  InterplantearyText ipt = [];
 
-  InterplanetaryTextTransform({required this.ipt, this.requester}) {}
+  InterplanetaryTextTransform(this.ipt) {}
 
-  TextSpan decode(String run) {
+  bool isRunATransclusionExpression(String run) {
+    return (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1);
+  }
+
+  TextSpan decode(String run, Repo repo) {
     var str = run;
     var arefOrigin;
-    if (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1) {
+    if (isRunATransclusionExpression(run)) {
       List<dynamic> expr = json.decode(str);
       //Todo check if there is a nested transclusion
       if (expr.length == 1) {
         //Static transclusion
         var aref = AbstractionReference.fromText(expr[0]);
         arefOrigin = aref.origin;
-        str = getTranscludedText(aref);
+        str = getTranscludedText(aref, repo);
       } else if (expr.length > 1) {
         //dynamic transclusion
       }
@@ -65,11 +68,11 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
   }*/
 
-  String getTranscludedText(AbstractionReference aref) {
+  String getTranscludedText(AbstractionReference aref, Repo repo) {
     Note? note;
     String? cid;
     if (aref.isIid()) {
-      cid = Repo.getCidWrapByIid(aref.iid!).cid;
+      cid = repo.getCidWrapByIid(aref.iid!).cid;
     } else if (aref.isCid()) {
       cid = aref.cid;
     } else {
@@ -78,7 +81,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
 
     if (cid != null) {
-      var noteWrap = Repo.getNoteWrapByCid(cid);
+      var noteWrap = repo.getNoteWrapByCid(cid);
       note = noteWrap.note;
     }
 
@@ -95,10 +98,11 @@ class InterplanetaryTextTransform extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repo = Provider.of<Repo>(context);
     List<TextSpan> elements = [];
 
-    for (var t in ipt) {
-      elements.add(decode(t));
+    for (var run in ipt) {
+      elements.add(decode(run, repo));
     }
     var text = RichText(
       text: TextSpan(
@@ -115,4 +119,3 @@ class InterplanetaryTextTransform extends StatelessWidget {
     return text;
   }
 }
-  */  

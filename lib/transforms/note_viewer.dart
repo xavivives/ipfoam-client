@@ -5,6 +5,7 @@ import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/transforms/abstraction_reference_link.dart';
+import 'package:ipfoam_client/transforms/interplanetary_text.dart';
 import 'package:ipfoam_client/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -51,14 +52,12 @@ class NoteViewer extends StatelessWidget {
         textAlign: TextAlign.left,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 20));
+            fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 16));
   }
 
   Widget buildContentByType(Note? typeNote, dynamic content, Repo repo) {
     if (typeNote != null && typeNote.block != null) {
       if (Utils.typeIsStruct(typeNote)) {
-        log(typeNote.block![Note.primitiveDefaultName] + " IN");
-
         return buildStruct(typeNote, content, repo);
       } else if (typeNote.block![Note.primitiveConstrains] != null) {
         //STRING
@@ -70,7 +69,6 @@ class NoteViewer extends StatelessWidget {
           return AbstractionReferenceLink(
               aref: AbstractionReference.fromText(content.toString()));
         }
-        //
 
         // List of Abstraction reference links
         else if (Utils.getBasicType(typeNote) ==
@@ -93,9 +91,17 @@ class NoteViewer extends StatelessWidget {
           return buildContentRaw(typeNote, "Date");
         } else if (Utils.getBasicType(typeNote) == Note.basicTypeUrl) {
           return buildContentRaw(typeNote, "Url");
+        } else if (Utils.getBasicType(typeNote) ==
+            Note.basicTypeInterplanetaryText) {
+          InterplantearyText ipt = [];
+
+          for (var run in content) {
+            log(run);
+            ipt.add(run as String);
+          }
+          return InterplanetaryTextTransform(ipt);
         }
       } else {
-        log(typeNote.block![Note.primitiveDefaultName] + " OUT");
         return buildContentRaw(typeNote, content);
       }
     }
@@ -154,7 +160,6 @@ class NoteViewer extends StatelessWidget {
 
     content!.forEach((key, value) {
       items.add(buildPropertyRow(key, value, repo));
-      log(key + " - " + value.toString());
     });
     //return Text("Struct");
     return ListView(
