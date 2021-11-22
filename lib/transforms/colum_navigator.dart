@@ -22,8 +22,13 @@ class ColumNavigatorState extends State<ColumNavigator> {
       notes.add(NoteViewer(iid));
     }
 
-    return Row(
-      children: notes,
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: [
+        Row(
+          children: notes,
+        )
+      ],
     );
   }
 }
