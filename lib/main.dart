@@ -1,30 +1,23 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:developer';
 import 'package:ipfoam_client/repo.dart';
-import 'package:ipfoam_client/transforms/note_viewer.dart';
+import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:provider/provider.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
-  const str3 = [
-    "Is a 1979 book by ",
-    "[\"m2u2cyfa/pwqlajqq\"]",
-    " that proposes a new theory of architecture (and design in general) that relies on the understanding and configuration of design patterns. Although it came out later, it is essentially the introduction to ",
-    "[\"n2sd3asq/pwqlajqq\"]",
-    " and The Oregon Experiment,"
-        "[\"x77cl54q/pwqlajqq\"]",
-    "[\"TYPEpwqlajqq\"]"
-  ];
-  const str1 = [
-    "[\"baguqeeraqmhjimttqkfw6xwzwflc57vla4jone6is3dfn5lf4terbxsj4cdq\"]",
-    "[\"baguqeerascthaxcbfhb6cfzq36a3qibhxayiuhq7i6moy6bylgu6s4jr4z4q\"]",
-    "[\"baguqeeralapclcswssawoyuwqpb7ghpszfcaw4bi3wt7nmnv6bqypwqlajqq\"]",
-    "[\"baguqeeraculrztrg66wun5z4he3qk6ufv3evalphmi7zjita342ae2ptefia\"]",
-    "[\"baguqeerauaki4hckr6xyrj6gk5rt7xe76xo4mhpnr7zy3r7krlluzkrrxnta\"]",
-    "[\"baguqeerawhkesgkfn6fkj2yoga2uaqclgwslkxa3yyx46vf7mkuzcwi7dj5q\"]",
-    "[\"baguqeerajxox2lwmztmjrz7vxywwr47c4ynkattrktbdetp7fz7x23qo4fua\"]",
-    "[\"baguqeeraxbwfigx2sawjonxkx467pifbvcd5jjcmihroe6nplwh7avzlrroa\"]",
-  ];
 }
 
 class MyApp extends StatelessWidget {
@@ -45,7 +38,10 @@ class MyApp extends StatelessWidget {
         ),
         home: ChangeNotifierProvider<Repo>(
             create: (context) => Repo(),
-            child: Scaffold(body: NoteViewer(iid: "iyvvefbya"))));
+            child: Scaffold(
+                body: ChangeNotifierProvider<Navigation>(
+                    child: ColumNavigator(),
+                    create: (context) => Navigation()))));
   }
 }
 

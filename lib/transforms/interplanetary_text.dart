@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/color_utils.dart';
 import 'package:ipfoam_client/main.dart';
@@ -7,6 +8,7 @@ import 'dart:convert';
 
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
+import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:provider/provider.dart';
 
 class InterplanetaryTextTransform extends StatelessWidget {
@@ -18,16 +20,16 @@ class InterplanetaryTextTransform extends StatelessWidget {
     return (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1);
   }
 
-  TextSpan decode(String run, Repo repo) {
+  TextSpan decode(String run, Repo repo, Navigation navigation) {
     var str = run;
-    var arefOrigin;
     if (isRunATransclusionExpression(run)) {
+      AbstractionReference aref = AbstractionReference.fromText("");
       List<dynamic> expr = json.decode(str);
       //Todo check if there is a nested transclusion
       if (expr.length == 1) {
         //Static transclusion
-        var aref = AbstractionReference.fromText(expr[0]);
-        arefOrigin = aref.origin;
+        aref = AbstractionReference.fromText(expr[0]);
+        // arefOrigin = aref.origin;
         str = getTranscludedText(aref, repo);
       } else if (expr.length > 1) {
         //dynamic transclusion
@@ -37,13 +39,19 @@ class InterplanetaryTextTransform extends StatelessWidget {
 
       return TextSpan(
           text: str,
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              if (aref != null && aref.iid != null) {
+                navigation.add(aref.iid!);
+              }
+            },
           style: TextStyle(
               color: Colors.black,
               //backgroundColor: Colors.yellow,
               fontWeight: FontWeight.w400,
               background: Paint()
                 ..strokeWidth = 10.0
-                ..color = getBackgroundColor(arefOrigin)
+                ..color = getBackgroundColor(aref.origin)
                 ..style = PaintingStyle.fill
 
                 // ..style = PaintingStyle.fill
@@ -101,10 +109,11 @@ class InterplanetaryTextTransform extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repo = Provider.of<Repo>(context);
+    final navigation = Provider.of<Navigation>(context);
     List<TextSpan> elements = [];
 
     for (var run in ipt) {
-      elements.add(decode(run, repo));
+      elements.add(decode(run, repo, navigation));
     }
     var text = RichText(
       text: TextSpan(

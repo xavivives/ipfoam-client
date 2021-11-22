@@ -16,6 +16,7 @@ class Note {
   static const String basicTypeUrl = "url";
   static const String propertyTitleIdd =
       "iqz3qlkca"; //This is a hack only valid for my Repo
+
   String cid;
   Map<String, dynamic>? block = {};
   //Bytes: bites//Todo, it could be arbitrary content theoretically

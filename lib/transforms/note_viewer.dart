@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 class NoteViewer extends StatelessWidget {
   final String iid;
 
-  NoteViewer({required this.iid});
+  NoteViewer(this.iid);
 
   String getStatusText(String? iid, String? cid, Note? note) {
     return "IID: " +
