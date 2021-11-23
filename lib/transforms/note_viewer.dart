@@ -5,14 +5,16 @@ import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/transforms/abstraction_reference_link.dart';
+import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:ipfoam_client/transforms/interplanetary_text.dart';
 import 'package:ipfoam_client/utils.dart';
 import 'package:provider/provider.dart';
 
 class NoteViewer extends StatelessWidget {
   final String iid;
+  final int columnIndex;
 
-  NoteViewer(this.iid);
+  NoteViewer(this.iid, this.columnIndex);
 
   String getStatusText(String? iid, String? cid, Note? note) {
     return "IID: " +
@@ -80,7 +82,6 @@ class NoteViewer extends StatelessWidget {
           });
 
           return ListView(
-            // padding: const EdgeInsets.all(8),
             children: items,
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
@@ -123,6 +124,7 @@ class NoteViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repo = Provider.of<Repo>(context);
+    final navigation = Provider.of<Navigation>(context);
 
     IidWrap iidWrap = repo.getCidWrapByIid(iid);
 
@@ -141,18 +143,12 @@ class NoteViewer extends StatelessWidget {
       items.add(buildPropertyRow(key, value, repo));
     });
 
-    return SizedBox(
-      width: 600,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: ListView(
-          // padding: const EdgeInsets.all(8),
-          children: items,
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-        ),
-      ),
-    );
+    return ListView(
+        padding: const EdgeInsets.all(8),
+        physics: ClampingScrollPhysics(),
+        children: items,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical);
   }
 
   buildStruct(Note? typeNote, dynamic content, Repo repo) {
@@ -163,9 +159,9 @@ class NoteViewer extends StatelessWidget {
     });
     //return Text("Struct");
     return ListView(
-      shrinkWrap: true,
+      //shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       children: items,
     );
   }

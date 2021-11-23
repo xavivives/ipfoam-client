@@ -15,11 +15,51 @@ class ColumNavigator extends StatefulWidget {
 
 class ColumNavigatorState extends State<ColumNavigator> {
   @override
+  Widget buildMenuBar(Navigation navigation, int column) {
+    return Row(children: [
+      TextButton(
+        style: TextButton.styleFrom(
+          textStyle: const TextStyle(fontSize: 20),
+        ),
+        onPressed: null,
+        child: const Text('Share'),
+      ),
+      TextButton(
+        style: TextButton.styleFrom(
+          textStyle: const TextStyle(fontSize: 20),
+        ),
+        onPressed: null,
+        child: const Text('View raw'),
+      ),
+      TextButton(
+        style: TextButton.styleFrom(
+          textStyle: const TextStyle(fontSize: 20),
+        ),
+        onPressed: () {
+          navigation.close(column);
+        },
+        child: const Text('Close'),
+      ),
+    ], mainAxisAlignment: MainAxisAlignment.end);
+  }
+
   Widget build(BuildContext context) {
     final navigation = Provider.of<Navigation>(context);
     List<Widget> notes = [];
-    for (var iid in navigation.history) {
-      notes.add(NoteViewer(iid));
+    for (var i = 0; i < navigation.history.length; i++) {
+      notes.add(
+        SizedBox(
+            width: 600,
+            child: Padding(
+                padding: const EdgeInsets.fromLTRB(50, 50, 50, 50),
+                child: ListView(
+                  //shrinkWrap: true,
+                  children: [
+                    buildMenuBar(navigation, i),
+                    NoteViewer(navigation.history[i], i),
+                  ],
+                ))),
+      );
     }
 
     return ListView(
@@ -37,6 +77,11 @@ class Navigation with ChangeNotifier {
   List<String> history = ["ig3yg7m4q"];
   void add(String iid) {
     history.add(iid);
+    notifyListeners();
+  }
+
+  void close(int column) {
+    history.removeAt(column);
     notifyListeners();
   }
 }
