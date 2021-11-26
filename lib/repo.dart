@@ -89,9 +89,12 @@ class Repo with ChangeNotifier {
       log("Nothing to fetch");
       return;
     }
-    var iidsEndPoint = "https://ipfoam-server-dc89h.ondigitalocean.app/iids/" +
-        iidsToLoad.join(",");
-    var result = await http.get(Uri.parse(iidsEndPoint));
+    var remoteServer = "https://ipfoam-server-dc89h.ondigitalocean.app/iids/";
+    var localServer = "http://localhost:8080/iids/";
+
+    var iidsEndPoint = localServer + iidsToLoad.join(",");
+    var uri = Uri.parse(iidsEndPoint);
+    var result = await http.get(uri);
     Map<String, dynamic> body = json.decode(result.body);
     //log(body.toString());
     Map<String, dynamic> cids = body["data"]["cids"];

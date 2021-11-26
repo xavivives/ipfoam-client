@@ -118,7 +118,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
     var text = RichText(
       text: TextSpan(
         style: const TextStyle(
-            fontSize: 20,
+            fontSize: 12,
             color: Colors.black,
             fontFamily: "OpenSans",
             fontWeight: FontWeight.w100,

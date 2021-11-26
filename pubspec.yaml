@@ -37,6 +37,7 @@ dependencies:
   http: ^0.13.3
   hex: ^0.2.0
   provider: ^6.0.1 
+  web_socket_channel: ^2.1.0 
 
 dev_dependencies:
   flutter_test:
