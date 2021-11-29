@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'dart:developer';
 import 'package:ipfoam_client/repo.dart';
+import 'package:ipfoam_client/transforms/bridge_wrapper.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
             create: (context) => Repo(),
             child: Scaffold(
                 body: ChangeNotifierProvider<Navigation>(
-                    child: ColumNavigator(),
+                    child: BridgeWrapper(ColumNavigator()),
                     create: (context) => Navigation()))));
   }
 }

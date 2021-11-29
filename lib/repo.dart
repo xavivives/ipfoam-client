@@ -55,7 +55,7 @@ class Repo with ChangeNotifier {
   }
 
   IidWrap getCidWrapByIid(String iid) {
-    if (Utils.cidIsValid(iid) == false) {
+    if (Utils.iidIsValid(iid) == false) {
       return IidWrap.invalid(iid);
     }
 
@@ -73,6 +73,13 @@ class Repo with ChangeNotifier {
     return iids[iid]!;
   }
 
+  IidWrap forceRequest(String iid) {
+    var wrap = getCidWrapByIid(iid); //ensure is created first
+    print("current status for: " + iid + wrap.status.toString());
+    iids[iid]!.status = RequestStatus.needed;
+    return wrap;
+  }
+
   Future<void> fetchIIds() async {
     List<String> iidsToLoad = [];
 
@@ -83,10 +90,11 @@ class Repo with ChangeNotifier {
         entry.status = RequestStatus.requested;
       }
     });
-    log("Server requesting " + iidsToLoad.toString());
+
+    print("Server requesting " + iidsToLoad.toString());
 
     if (iidsToLoad.isEmpty) {
-      log("Nothing to fetch");
+      print("Nothing to fetch");
       return;
     }
     var remoteServer = "https://ipfoam-server-dc89h.ondigitalocean.app/iids/";
@@ -113,6 +121,9 @@ class Repo with ChangeNotifier {
       }
     });
   }
+
+  //Bridge
+
 }
 
 //undefined: default state. Is only in this state if no action has been done

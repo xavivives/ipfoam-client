@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ipfoam_client/bridge.dart';
 import 'package:ipfoam_client/transforms/note_viewer.dart';
 import 'package:provider/provider.dart';
 
@@ -18,20 +17,6 @@ class ColumNavigatorState extends State<ColumNavigator> {
   @override
   Widget buildMenuBar(Navigation navigation, int column) {
     return Row(children: [
-      /*  TextButton(
-        style: TextButton.styleFrom(
-          textStyle: const TextStyle(fontSize: 20),
-        ),
-        onPressed: null,
-        child: const Text('Share'),
-      ),
-      TextButton(
-        style: TextButton.styleFrom(
-          textStyle: const TextStyle(fontSize: 20),
-        ),
-        onPressed: null,
-        child: const Text('View raw'),
-      ),*/
       TextButton(
         style: TextButton.styleFrom(
           textStyle: const TextStyle(fontSize: 12),
@@ -77,16 +62,6 @@ class ColumNavigatorState extends State<ColumNavigator> {
 class Navigation with ChangeNotifier {
   List<String> history = ["iamsdlhba"];
 
-  Navigation() {
-    var bridge = Bridge();
-    bridge.startWs(onIid: onBridgeIid);
-  }
-
-  void onBridgeIid(String iid) {
-    history = [];
-    add(iid);
-  }
-
   void add(String iid) {
     history.add(iid);
     notifyListeners();
@@ -95,5 +70,9 @@ class Navigation with ChangeNotifier {
   void close(int column) {
     history.removeAt(column);
     notifyListeners();
+  }
+
+  void reset() {
+    history = [];
   }
 }

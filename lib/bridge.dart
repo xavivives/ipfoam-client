@@ -11,7 +11,7 @@ class Bridge with ChangeNotifier {
 
     /// Create the WebSocket channel
     final channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:1234'),
+      Uri.parse('ws://localhost:' + port.toString()),
     );
 /*
     channel.sink.add(
