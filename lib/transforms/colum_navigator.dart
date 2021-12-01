@@ -37,7 +37,7 @@ class ColumNavigatorState extends State<ColumNavigator> {
         SizedBox(
             width: 600,
             child: Padding(
-                padding: const EdgeInsets.fromLTRB(50, 50, 50, 50),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: ListView(
                   //shrinkWrap: true,
                   children: [

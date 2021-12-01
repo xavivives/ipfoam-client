@@ -94,7 +94,7 @@ class NoteViewer extends StatelessWidget {
           return buildContentRaw(typeNote, "Url");
         } else if (Utils.getBasicType(typeNote) ==
             Note.basicTypeInterplanetaryText) {
-          InterplantearyText ipt = [];
+           List<String> ipt = [];
 
           for (var run in content) {
             log(run);

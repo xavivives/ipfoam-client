@@ -12,7 +12,7 @@ import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:provider/provider.dart';
 
 class InterplanetaryTextTransform extends StatelessWidget {
-  InterplantearyText ipt = [];
+  List<String> ipt = [];
 
   InterplanetaryTextTransform(this.ipt) {}
 
@@ -22,6 +22,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
 
   TextSpan decode(String run, Repo repo, Navigation navigation) {
     var str = run;
+    List<TextSpan> elements = [];
     if (isRunATransclusionExpression(run)) {
       AbstractionReference aref = AbstractionReference.fromText("");
       List<dynamic> expr = json.decode(str);
@@ -30,15 +31,27 @@ class InterplanetaryTextTransform extends StatelessWidget {
         //Static transclusion
         aref = AbstractionReference.fromText(expr[0]);
         // arefOrigin = aref.origin;
-        str = getTranscludedText(aref, repo);
+        var t = getTranscludedText(aref, repo);
+        //simple transclusion
+        if(t.length<=1){
+          str=t[0];
+        }
+        //ipt trasnclusion
+        else {
+          
+           for (var run in t) {
+            elements.add(decode(run, repo, navigation));
+          }
+          str = "";
+        }
+        
       } else if (expr.length > 1) {
         //dynamic transclusion
       }
 
-      log("got" + str);
-
       return TextSpan(
           text: str,
+          children: elements,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               if (aref != null && aref.iid != null) {
@@ -76,7 +89,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
   }*/
 
-  String getTranscludedText(AbstractionReference aref, Repo repo) {
+  List<String> getTranscludedText(AbstractionReference aref, Repo repo) {
     Note? note;
     String? cid;
     if (aref.isIid()) {
@@ -84,8 +97,8 @@ class InterplanetaryTextTransform extends StatelessWidget {
     } else if (aref.isCid()) {
       cid = aref.cid;
     } else {
-      //unknown
-      return aref.origin;
+      //unknown, Text
+      return [aref.origin];
     }
 
     if (cid != null) {
@@ -94,16 +107,21 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
 
     if (note == null) {
-      return aref.origin;
-    } else if (aref.path != null) {
-      //TODO. Only one element of the path is supported
-
-      if (aref.path!.length == 1 && note.block![aref.path![0]] != null) {
-        return note.block![aref.path![0]] as String;
+      return [aref.origin];
+    } else if (aref.tiid != null) {
+      if (note.block![aref.tiid] != null) {
+          //TODO verify what type is 
+        try {
+          //Transcluded text 
+          return [note.block![aref.tiid] as String];
+        } catch (e) {
+          //Transcluded transclusion (ipt)
+          return note.block![aref.tiid];
+        }
       }
     }
 
-    return aref.origin;
+    return  [aref.origin];
   }
 
   @override
@@ -129,4 +147,6 @@ class InterplanetaryTextTransform extends StatelessWidget {
 
     return text;
   }
+
+
 }

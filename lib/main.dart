@@ -46,12 +46,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-typedef InterplantearyText = List<String>;
+
 typedef NoteRequester = Function(List<String>);
 
 class AbstractionReference {
   String? mid;
   String? iid;
+  String? tiid; //TypeIId (property)
   List<String>? path;
   String? cid;
   late String origin; // "mid:iid" or "cid"
@@ -59,12 +60,13 @@ class AbstractionReference {
   static String pathToken = "/";
   static String midPlaceholder = "x";
 
-  //An abstraction reference has the signature "mid:iid/prop/path/" or "cid/prop/path"
+  //An abstraction reference has the signature "mid:iid/tiid/path/" or "cid/tiid/path" or cid/path
+
 
   AbstractionReference.fromText(String text) {
     var t = text.split(AbstractionReference.pathToken);
     origin = t[0]; // "mid:iid" or "cid"
-    path = t..removeAt(0);
+   
 
     //if there is no token we can assume is a CID. Except whie mids are not implemented
     var o = origin.split(AbstractionReference.midToIidToken);
@@ -83,6 +85,16 @@ class AbstractionReference {
     } else {
       log("Error parssing expression:" + text);
     }
+
+    if(t.length>1){
+     var propertiesRuns =t..removeAt(0);
+     tiid = propertiesRuns[0];
+     if(propertiesRuns.length>1){
+       path = propertiesRuns..remove(0);
+     }
+
+    }
+    print("mid:$mid iid:$iid tiid:$tiid path:$path");
   }
 
   bool isIid() {
