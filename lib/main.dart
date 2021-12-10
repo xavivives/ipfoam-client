@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:ipfoam_client/bridge.dart';
 import 'dart:developer';
 import 'package:ipfoam_client/repo.dart';
-import 'package:ipfoam_client/transforms/bridge_wrapper.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
+import 'package:ipfoam_client/transforms/square.dart';
 import 'package:provider/provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -24,28 +25,53 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    //server.getCids(["mstfwyya", "isw76vwa", "x77cl54q", "TYPEpwqlajqq"]);
-    //Repo.getCidWrapByIid("mstfwyya");
-    //Server.requestIidsToLoad();
+
+    var repo = Repo();
+    var navigation = Navigation();
+    var bridge = Bridge();
+    var square = Square(repo, navigation, bridge);
+    var columNavigator = ColumnNavigator();
+
+    var page = ChangeNotifierProvider.value(
+          value: repo,
+          child: Scaffold(
+              body: ChangeNotifierProvider.value(
+                  value: navigation,
+                  child: columNavigator
+                  )));
 
     return MaterialApp(
-        title: ' Interplanetary mind map',
-        theme: ThemeData(
-          fontFamily: 'OpenSans',
-          canvasColor: Colors.white,
-        ),
-        home: ChangeNotifierProvider<Repo>(
-            create: (context) => Repo(),
-            child: Scaffold(
-                body: ChangeNotifierProvider<Navigation>(
-                    child: BridgeWrapper(ColumNavigator()),
-                    create: (context) => Navigation()))));
+      title: ' Interplanetary mind map',
+      theme: ThemeData(
+        fontFamily: 'OpenSans',
+        canvasColor: Colors.white,
+      ),
+      home: page,
+
+
+      onGenerateRoute: (settings) {
+        if (settings.name != null) {
+          final settingsUri = Uri.parse(settings.name!);
+          square.processRoute(settingsUri);
+          //Navigator.pushNamed(context, "/abc");
+          
+          
+         return PageRouteBuilder(pageBuilder: (_, __, ___) => page, settings:settings);
+        }
+      },
+    );
   }
 }
 
+
+class ScreenArguments {
+  final String title;
+  final String message;
+
+  ScreenArguments(this.title, this.message);
+}
 
 typedef NoteRequester = Function(List<String>);
 
@@ -62,11 +88,9 @@ class AbstractionReference {
 
   //An abstraction reference has the signature "mid:iid/tiid/path/" or "cid/tiid/path" or cid/path
 
-
   AbstractionReference.fromText(String text) {
     var t = text.split(AbstractionReference.pathToken);
     origin = t[0]; // "mid:iid" or "cid"
-   
 
     //if there is no token we can assume is a CID. Except whie mids are not implemented
     var o = origin.split(AbstractionReference.midToIidToken);
@@ -86,15 +110,14 @@ class AbstractionReference {
       log("Error parssing expression:" + text);
     }
 
-    if(t.length>1){
-     var propertiesRuns =t..removeAt(0);
-     tiid = propertiesRuns[0];
-     if(propertiesRuns.length>1){
-       path = propertiesRuns..remove(0);
-     }
-
+    if (t.length > 1) {
+      var propertiesRuns = t..removeAt(0);
+      tiid = propertiesRuns[0];
+      if (propertiesRuns.length > 1) {
+        path = propertiesRuns..remove(0);
+      }
     }
-    print("mid:$mid iid:$iid tiid:$tiid path:$path");
+    //print("mid:$mid iid:$iid tiid:$tiid path:$path");
   }
 
   bool isIid() {

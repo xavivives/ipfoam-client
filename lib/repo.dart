@@ -91,7 +91,7 @@ class Repo with ChangeNotifier {
       }
     });
 
-    print("Server requesting " + iidsToLoad.toString());
+    //print("Server requesting " + iidsToLoad.toString());
 
     if (iidsToLoad.isEmpty) {
       print("Nothing to fetch");
@@ -122,7 +122,6 @@ class Repo with ChangeNotifier {
     });
   }
 
-  //Bridge
 
 }
 

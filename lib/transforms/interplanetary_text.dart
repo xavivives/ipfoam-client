@@ -133,8 +133,20 @@ class InterplanetaryTextTransform extends StatelessWidget {
     for (var run in ipt) {
       elements.add(decode(run, repo, navigation));
     }
-    var text = RichText(
+    /*var text = RichText(
       text: TextSpan(
+        style: const TextStyle(
+            fontSize: 12,
+            color: Colors.black,
+            fontFamily: "OpenSans",
+            fontWeight: FontWeight.w100,
+            height: 1.5),
+        children: elements,
+      ),
+    );
+    */
+    var text = SelectableText.rich(
+       TextSpan(
         style: const TextStyle(
             fontSize: 12,
             color: Colors.black,

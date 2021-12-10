@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:ipfoam_client/transforms/note_viewer.dart';
 import 'package:provider/provider.dart';
 
-class ColumNavigator extends StatefulWidget {
-  ColumNavigator({
+class ColumnNavigator extends StatefulWidget {
+  ColumnNavigator({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ColumNavigator> createState() => ColumNavigatorState();
-
-  List<String> history = ["ig3yg7m4q", "ig3yg7m4q", "iyd6bkixa"];
+  State<ColumnNavigator> createState() => ColumnNavigatorState();
 }
 
-class ColumNavigatorState extends State<ColumNavigator> {
+class ColumnNavigatorState extends State<ColumnNavigator> {
   @override
   Widget buildMenuBar(Navigation navigation, int column) {
     return Row(children: [
@@ -60,6 +58,9 @@ class ColumNavigatorState extends State<ColumNavigator> {
 }
 
 class Navigation with ChangeNotifier {
+
+     
+
   List<String> history = ["iamsdlhba"];
 
   void add(String iid) {
