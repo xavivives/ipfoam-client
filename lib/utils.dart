@@ -47,13 +47,11 @@ class Utils {
   }
 
   static bool typeIsStruct(Note note) {
-    if (note.block != null) {
-      if (note.block![Note.primitiveIpldSchema] != null) {
-        if (note.block![Note.primitiveIpldSchema]
-            .toString()
-            .contains(Note.structTypeIdentifier)) {
-          return true;
-        }
+    if (note.block[Note.primitiveIpldSchema] != null) {
+      if (note.block[Note.primitiveIpldSchema]
+          .toString()
+          .contains(Note.structTypeIdentifier)) {
+        return true;
       }
     }
     return false;
@@ -61,16 +59,15 @@ class Utils {
 
   static String? getBasicType(Note typeNote) {
     //BasicType refers to hack to easly recognize a primitive type in the proof of concept. The first element of the constrain property of a propertyType is that type
-    if (typeNote.block != null &&
-        typeNote.block![Note.primitiveConstrains] != null &&
-        typeNote.block![Note.primitiveConstrains][0] != null) {
-      return typeNote.block![Note.primitiveConstrains][0];
+    if (typeNote.block[Note.primitiveConstrains] != null &&
+        typeNote.block[Note.primitiveConstrains][0] != null) {
+      return typeNote.block[Note.primitiveConstrains][0];
     } else {
       return null;
     }
   }
 
- static Note? getNote(AbstractionReference aref, Repo repo) {
+  static Note? getNote(AbstractionReference aref, Repo repo) {
     Note? note;
     String? cid;
     if (aref.isIid()) {

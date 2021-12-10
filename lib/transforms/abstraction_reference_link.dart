@@ -41,9 +41,9 @@ class AbstractionReferenceLink extends StatelessWidget {
 
     if (cidWrap != null &&
         cidWrap.note != null &&
-        cidWrap.note!.block != null &&
-        cidWrap.note!.block![Note.propertyTitleIdd] != null) {
-      str = cidWrap.note!.block![Note.propertyTitleIdd];
+        
+        cidWrap.note!.block[Note.propertyTitleIdd] != null) {
+      str = cidWrap.note!.block[Note.propertyTitleIdd];
     }
 
     return buildText(str);
