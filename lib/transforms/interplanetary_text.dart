@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
+import 'package:ipfoam_client/transforms/sub_abstraction_block.dart';
+import 'package:ipfoam_client/utils.dart';
 import 'package:provider/provider.dart';
 
 class InterplanetaryTextTransform extends StatelessWidget {
@@ -20,14 +22,13 @@ class InterplanetaryTextTransform extends StatelessWidget {
 
   TextSpan decodeDynamicTransclusion(List<String> expr, Repo repo) {
     var transformAref = AbstractionReference.fromText(expr[0]);
-    var transformNote = getNote(transformAref, repo);
+    var transformNote = Utils.getNote(transformAref, repo);
   
     if (transformNote != null) {
-      print("hello");
-      print(transformNote.block);
+
       if (transformNote.block![Note.propertyTransformIdd]) {
         return applyTransform(transformNote.block![Note.propertyTransformIdd],
-            expr.sublist(1, expr.length));
+            expr.sublist(1, expr.length), repo);
       }
     }
 
@@ -38,12 +39,20 @@ class InterplanetaryTextTransform extends StatelessWidget {
         ));
   }
 
-  TextSpan applyTransform(String transformId, List<String> exp) {
-    print ("apply");
-    print(transformId);
-    print(exp);
+  TextSpan applyTransform(String transformId, List<String> expr, Repo repo) {
+    if(transformId==Note.transFilter){
+      //TODO
+    }
+    else if(transformId==Note.transSubAbstractionBlock){
+      print("HERE");
+      var transcludedNoteAref = AbstractionReference.fromText(expr[0]);
+      var block =  SubAbstractionBlock(transcludedNoteAref, 0, repo  );
+      return block.renderIPT();
+     
+    }
+
     return TextSpan(
-        text: "<dynamic transclusion>",
+        text: "<"+transformId+" not implemented>",
         style: const TextStyle(
           fontWeight: FontWeight.w300,
         ));
@@ -117,29 +126,10 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
   }*/
 
-  Note? getNote(AbstractionReference aref, Repo repo) {
-    Note? note;
-    String? cid;
-    if (aref.isIid()) {
-      cid = repo.getCidWrapByIid(aref.iid!).cid;
-    } else if (aref.isCid()) {
-      cid = aref.cid;
-    } else {
-      //unknown, Text
-    }
-  print("getnote");
-  print(cid);
-  print(aref.iid);
 
-    if (cid != null) {
-      var noteWrap = repo.getNoteWrapByCid(cid);
-      note = noteWrap.note;
-    }
-    return note;
-  }
 
   List<String> getTranscludedText(AbstractionReference aref, Repo repo) {
-    var note = getNote(aref, repo);
+    var note = Utils.getNote(aref, repo);
 
     if (note == null) {
       return [aref.origin];

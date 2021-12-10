@@ -14,15 +14,23 @@ class Note {
       "abstraction-reference-list";
   static const String basicTypeBoolean = "boolean";
   static const String basicTypeUrl = "url";
+  //Thesae are only valid for my Repo
+  //Todo: move to config
   static const String propertyTitleIdd =
-      "iqz3qlkca"; //This is a hack only valid for my Repo
-        static const String propertyTransformIdd ="iwp2piu4q";
+      "iqz3qlkca"; 
+        static const String propertyAbstractIdd =
+      "ibztj655a";
+        static const String propertyViewIdd =
+      "inwyia5xq";
+  static const String propertyTransformIdd = "iwp2piu4q";
+  static const String transSubAbstractionBlock = "sub-abstraction-block";
+  static const String transFilter = "filter";
 
   String cid;
-  Map<String, dynamic>? block = {};
+  Map<String, dynamic> block = {};
   //Bytes: bites//Todo, it could be arbitrary content theoretically
 
-  Note({required this.cid, this.block});
+  Note({required this.cid, required this.block});
 
   Note.fromJSONU(this.cid, String jsonBlock) {
     block = json.decode(jsonBlock) as Map<String, dynamic>;

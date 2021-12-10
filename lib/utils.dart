@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/note.dart';
+import 'package:ipfoam_client/repo.dart';
 
 class Utils {
   static List<String> getIddTypesForBlock(Map<String, dynamic> block) {
@@ -66,5 +68,22 @@ class Utils {
     } else {
       return null;
     }
+  }
+
+ static Note? getNote(AbstractionReference aref, Repo repo) {
+    Note? note;
+    String? cid;
+    if (aref.isIid()) {
+      cid = repo.getCidWrapByIid(aref.iid!).cid;
+    } else if (aref.isCid()) {
+      cid = aref.cid;
+    } else {
+      //unknown, Text
+    }
+    if (cid != null) {
+      var noteWrap = repo.getNoteWrapByCid(cid);
+      note = noteWrap.note;
+    }
+    return note;
   }
 }
