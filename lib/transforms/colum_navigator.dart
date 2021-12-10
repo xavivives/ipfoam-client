@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/transforms/note_viewer.dart';
 import 'package:provider/provider.dart';
+import 'dart:html' as Html;
 
 class ColumnNavigator extends StatefulWidget {
   ColumnNavigator({
@@ -58,22 +59,25 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
 }
 
 class Navigation with ChangeNotifier {
-
-     
-
   List<String> history = ["iamsdlhba"];
 
   void add(String iid) {
     history.add(iid);
-    notifyListeners();
+    notify();
   }
 
   void close(int column) {
     history.removeAt(column);
-    notifyListeners();
+    notify();
   }
 
   void reset() {
     history = [];
+  }
+
+  void notify() {
+    notifyListeners();
+    Html.window.history.pushState(
+        null, "Interplanetary mind-map", "#?iids=" + history.join(","));
   }
 }

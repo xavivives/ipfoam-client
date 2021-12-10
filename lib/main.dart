@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
     var repo = Repo();
     var navigation = Navigation();
     var bridge = Bridge();
-    var square = Square(repo, navigation, bridge);
+    var square = Square(context, repo, navigation, bridge);
     var columNavigator = ColumnNavigator();
 
     var page = ChangeNotifierProvider.value(
@@ -55,9 +55,8 @@ class MyApp extends StatelessWidget {
         if (settings.name != null) {
           final settingsUri = Uri.parse(settings.name!);
           square.processRoute(settingsUri);
-          //Navigator.pushNamed(context, "/abc");
-          
-          
+            print(Uri.base);
+    print(Uri.base.queryParameters);
          return PageRouteBuilder(pageBuilder: (_, __, ___) => page, settings:settings);
         }
       },
