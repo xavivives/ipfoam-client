@@ -32,7 +32,7 @@ class NoteViewer extends StatelessWidget {
     if (cid != null) {
       typeNote = repo.getNoteWrapByCid(cid).note;
       if (typeNote != null) {
-        propertyName = typeNote.block![Note.primitiveDefaultName];
+        propertyName = typeNote.block[Note.primitiveDefaultName];
       }
     } else {}
 
@@ -58,10 +58,10 @@ class NoteViewer extends StatelessWidget {
   }
 
   Widget buildContentByType(Note? typeNote, dynamic content, Repo repo) {
-    if (typeNote != null && typeNote.block != null) {
+    if (typeNote != null ) {
       if (Utils.typeIsStruct(typeNote)) {
         return buildStruct(typeNote, content, repo);
-      } else if (typeNote.block![Note.primitiveConstrains] != null) {
+      } else if (typeNote.block[Note.primitiveConstrains] != null) {
         //STRING
         if (Utils.getBasicType(typeNote) == Note.basicTypeString) {
         }
@@ -139,7 +139,7 @@ class NoteViewer extends StatelessWidget {
 
     List<Widget> items = [];
 
-    cidWrap.note!.block!.forEach((key, value) {
+    cidWrap.note!.block.forEach((key, value) {
       items.add(buildPropertyRow(key, value, repo));
     });
 

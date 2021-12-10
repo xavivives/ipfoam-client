@@ -20,39 +20,37 @@ class InterplanetaryTextTransform extends StatelessWidget {
     return (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1);
   }
 
-  TextSpan decodeDynamicTransclusion(List<String> expr, Repo repo) {
+  TextSpan decodeDynamicTransclusion(
+      List<String> expr, Repo repo, Navigation navigation) {
     var transformAref = AbstractionReference.fromText(expr[0]);
     var transformNote = Utils.getNote(transformAref, repo);
-  
-    if (transformNote != null) {
 
-      if (transformNote.block![Note.propertyTransformIdd]) {
-        return applyTransform(transformNote.block![Note.propertyTransformIdd],
-            expr.sublist(1, expr.length), repo);
+    if (transformNote != null) {
+      if (transformNote.block[Note.propertyTransformIdd]) {
+        return applyTransform(transformNote.block[Note.propertyTransformIdd],
+            expr.sublist(1, expr.length), repo, navigation);
       }
     }
 
-    return TextSpan(
+    return const TextSpan(
         text: "<dynamic transclusion>",
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w300,
         ));
   }
 
-  TextSpan applyTransform(String transformId, List<String> expr, Repo repo) {
-    if(transformId==Note.transFilter){
+  TextSpan applyTransform(
+      String transformId, List<String> expr, Repo repo, Navigation navigation) {
+    if (transformId == Note.transFilter) {
       //TODO
-    }
-    else if(transformId==Note.transSubAbstractionBlock){
-      print("HERE");
+    } else if (transformId == Note.transSubAbstractionBlock) {
       var transcludedNoteAref = AbstractionReference.fromText(expr[0]);
-      var block =  SubAbstractionBlock(transcludedNoteAref, 0, repo  );
-      return block.renderIPT();
-     
+      var block = SubAbstractionBlock(transcludedNoteAref, 0, repo);
+      return block.renderIPT(repo, navigation);
     }
 
     return TextSpan(
-        text: "<"+transformId+" not implemented>",
+        text: "<" + transformId + " not implemented>",
         style: const TextStyle(
           fontWeight: FontWeight.w300,
         ));
@@ -83,7 +81,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
           str = "";
         }
       } else if (expr.length > 1) {
-        return decodeDynamicTransclusion(expr, repo);
+        return decodeDynamicTransclusion(expr, repo, navigation);
       }
 
       return TextSpan(
@@ -126,22 +124,20 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
   }*/
 
-
-
   List<String> getTranscludedText(AbstractionReference aref, Repo repo) {
     var note = Utils.getNote(aref, repo);
 
     if (note == null) {
       return [aref.origin];
     } else if (aref.tiid != null) {
-      if (note.block![aref.tiid] != null) {
+      if (note.block[aref.tiid] != null) {
         //TODO verify what type is
         try {
           //Transcluded text
-          return [note.block![aref.tiid] as String];
+          return [note.block[aref.tiid] as String];
         } catch (e) {
           //Transcluded transclusion (ipt)
-          return note.block![aref.tiid];
+          return note.block[aref.tiid];
         }
       }
     }
@@ -149,26 +145,27 @@ class InterplanetaryTextTransform extends StatelessWidget {
     return [aref.origin];
   }
 
+  List<TextSpan> renderIPT(repo, navigation) {
+    List<TextSpan> elements = [];
+    for (var run in ipt) {
+      elements.add(decode(run, repo, navigation));
+    }
+    return elements;
+  }
+
   @override
   Widget build(BuildContext context) {
     final repo = Provider.of<Repo>(context);
     final navigation = Provider.of<Navigation>(context);
-    List<TextSpan> elements = [];
-
-    for (var run in ipt) {
-      elements.add(decode(run, repo, navigation));
-    }
-    var text = SelectableText.rich(
-      TextSpan(
-        style: const TextStyle(
-            fontSize: 12,
-            color: Colors.black,
-            fontFamily: "OpenSans",
-            fontWeight: FontWeight.w100,
-            height: 1.5),
-        children: elements,
-      ),
-    );
+    var text = SelectableText.rich(TextSpan(
+      style: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+          fontFamily: "OpenSans",
+          fontWeight: FontWeight.w100,
+          height: 1.5),
+      children: renderIPT(repo, navigation),
+    ));
 
     return text;
   }
