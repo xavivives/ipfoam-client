@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/color_utils.dart';
@@ -20,12 +18,44 @@ class InterplanetaryTextTransform extends StatelessWidget {
     return (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1);
   }
 
+  TextSpan decodeDynamicTransclusion(List<String> expr, Repo repo) {
+    var transformAref = AbstractionReference.fromText(expr[0]);
+    var transformNote = getNote(transformAref, repo);
+  
+    if (transformNote != null) {
+      print("hello");
+      print(transformNote.block);
+      if (transformNote.block![Note.propertyTransformIdd]) {
+        return applyTransform(transformNote.block![Note.propertyTransformIdd],
+            expr.sublist(1, expr.length));
+      }
+    }
+
+    return TextSpan(
+        text: "<dynamic transclusion>",
+        style: const TextStyle(
+          fontWeight: FontWeight.w300,
+        ));
+  }
+
+  TextSpan applyTransform(String transformId, List<String> exp) {
+    print ("apply");
+    print(transformId);
+    print(exp);
+    return TextSpan(
+        text: "<dynamic transclusion>",
+        style: const TextStyle(
+          fontWeight: FontWeight.w300,
+        ));
+  }
+
   TextSpan decode(String run, Repo repo, Navigation navigation) {
     var str = run;
     List<TextSpan> elements = [];
+
     if (isRunATransclusionExpression(run)) {
       AbstractionReference aref = AbstractionReference.fromText("");
-      List<dynamic> expr = json.decode(str);
+      List<String> expr = json.decode(str);
       //Todo check if there is a nested transclusion
       if (expr.length == 1) {
         //Static transclusion
@@ -33,20 +63,18 @@ class InterplanetaryTextTransform extends StatelessWidget {
         // arefOrigin = aref.origin;
         var t = getTranscludedText(aref, repo);
         //simple transclusion
-        if(t.length<=1){
-          str=t[0];
+        if (t.length <= 1) {
+          str = t[0];
         }
         //ipt trasnclusion
         else {
-          
-           for (var run in t) {
+          for (var run in t) {
             elements.add(decode(run, repo, navigation));
           }
           str = "";
         }
-        
       } else if (expr.length > 1) {
-        //dynamic transclusion
+        return decodeDynamicTransclusion(expr, repo);
       }
 
       return TextSpan(
@@ -89,7 +117,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
     }
   }*/
 
-  List<String> getTranscludedText(AbstractionReference aref, Repo repo) {
+  Note? getNote(AbstractionReference aref, Repo repo) {
     Note? note;
     String? cid;
     if (aref.isIid()) {
@@ -98,21 +126,28 @@ class InterplanetaryTextTransform extends StatelessWidget {
       cid = aref.cid;
     } else {
       //unknown, Text
-      return [aref.origin];
     }
+  print("getnote");
+  print(cid);
+  print(aref.iid);
 
     if (cid != null) {
       var noteWrap = repo.getNoteWrapByCid(cid);
       note = noteWrap.note;
     }
+    return note;
+  }
+
+  List<String> getTranscludedText(AbstractionReference aref, Repo repo) {
+    var note = getNote(aref, repo);
 
     if (note == null) {
       return [aref.origin];
     } else if (aref.tiid != null) {
       if (note.block![aref.tiid] != null) {
-          //TODO verify what type is 
+        //TODO verify what type is
         try {
-          //Transcluded text 
+          //Transcluded text
           return [note.block![aref.tiid] as String];
         } catch (e) {
           //Transcluded transclusion (ipt)
@@ -121,7 +156,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
       }
     }
 
-    return  [aref.origin];
+    return [aref.origin];
   }
 
   @override
@@ -133,20 +168,8 @@ class InterplanetaryTextTransform extends StatelessWidget {
     for (var run in ipt) {
       elements.add(decode(run, repo, navigation));
     }
-    /*var text = RichText(
-      text: TextSpan(
-        style: const TextStyle(
-            fontSize: 12,
-            color: Colors.black,
-            fontFamily: "OpenSans",
-            fontWeight: FontWeight.w100,
-            height: 1.5),
-        children: elements,
-      ),
-    );
-    */
     var text = SelectableText.rich(
-       TextSpan(
+      TextSpan(
         style: const TextStyle(
             fontSize: 12,
             color: Colors.black,
@@ -159,6 +182,4 @@ class InterplanetaryTextTransform extends StatelessWidget {
 
     return text;
   }
-
-
 }
