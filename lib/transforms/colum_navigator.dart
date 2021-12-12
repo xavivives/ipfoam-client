@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/transforms/note_viewer.dart';
 import 'package:provider/provider.dart';
-import 'dart:html' as Html;
 
 class ColumnNavigator extends StatefulWidget {
   ColumnNavigator({
@@ -33,8 +32,8 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
     List<Widget> notes = [];
     for (var i = 0; i < navigation.history.length; i++) {
       notes.add(
-        SizedBox(
-            width: 600,
+        ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 650),
             child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: ListView(

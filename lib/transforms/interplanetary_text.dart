@@ -159,11 +159,12 @@ class InterplanetaryTextTransform extends StatelessWidget {
     final navigation = Provider.of<Navigation>(context);
     var text = SelectableText.rich(TextSpan(
       style: const TextStyle(
-          fontSize: 12,
+          fontSize: 16,
           color: Colors.black,
           fontFamily: "OpenSans",
           fontWeight: FontWeight.w100,
-          height: 1.5),
+          fontStyle: FontStyle.normal,//TODO: Use FontStyle.normal. Flutter bug
+          height: 1.7),
       children: renderIPT(repo, navigation),
     ));
 

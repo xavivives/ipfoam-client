@@ -46,7 +46,7 @@ class SubAbstractionBlock {
   TextSpan renderTitle(String str) {
     return TextSpan(
         text: str,
-        style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 20));
+        style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 36,height: 1.2));
   }
 
   TextSpan renderAbstract(List<String> ipt, repo, navigation) {
@@ -67,13 +67,6 @@ class SubAbstractionBlock {
     var text = a.renderIPT(repo, navigation);
     return TextSpan(
         children: text,
-        style:  TextStyle(
-            fontWeight: FontWeight.w300, fontStyle: FontStyle.normal, background: Paint()
-              ..color = Colors.blue
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 2.0
-              ..strokeJoin = StrokeJoin.bevel
-              ..blendMode = BlendMode.difference,
-          ),);
+      );
   }
 }
