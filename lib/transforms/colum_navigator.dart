@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/transforms/note_viewer.dart';
 import 'package:provider/provider.dart';
+import 'dart:html' as Html;
 
 class ColumnNavigator extends StatefulWidget {
   ColumnNavigator({
