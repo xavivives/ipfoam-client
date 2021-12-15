@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
-import 'package:ipfoam_client/transforms/interplanetary_text.dart';
+import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
 import 'package:ipfoam_client/utils.dart';
 
 class SubAbstractionBlock {

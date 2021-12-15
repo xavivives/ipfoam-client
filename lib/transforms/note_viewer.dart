@@ -6,7 +6,7 @@ import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/transforms/abstraction_reference_link.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
-import 'package:ipfoam_client/transforms/interplanetary_text.dart';
+import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
 import 'package:ipfoam_client/utils.dart';
 import 'package:provider/provider.dart';
 
