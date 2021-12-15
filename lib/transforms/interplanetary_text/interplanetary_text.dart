@@ -33,7 +33,7 @@ abstract class IptRun {
   bool isPlainText();
   bool isStaticTransclusion();
   bool isDynamicTransclusion();
-  TextSpan getTranscludedOuput(Repo repo, Navigation navigation);
+  TextSpan renderTransclusion(Repo repo, Navigation navigation);
 }
 
 
@@ -52,7 +52,7 @@ class InterplanetaryTextTransform extends StatelessWidget {
   List<TextSpan> renderIPT(repo, navigation) {
     List<TextSpan> elements = [];
     for (var ipte in iptElements) {
-      elements.add(ipte.getTranscludedOuput(repo,navigation));
+      elements.add(ipte.renderTransclusion(repo,navigation));
     }
     return elements;
   }

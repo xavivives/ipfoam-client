@@ -25,7 +25,7 @@ class PlainTextRun implements IptRun {
   }
 
   @override
-  TextSpan getTranscludedOuput(Repo repo, Navigation navigation) {
+  TextSpan renderTransclusion(Repo repo, Navigation navigation) {
     return TextSpan(
         text: text,
         style: const TextStyle(

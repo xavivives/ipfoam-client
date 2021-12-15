@@ -52,7 +52,7 @@ class StaticTransclusionRun implements IptRun {
 
   @override
 
-  TextSpan getTranscludedOuput(Repo repo, Navigation navigation) {
+  TextSpan renderTransclusion(Repo repo, Navigation navigation) {
     var text = "";
     var t = getTranscludedText(repo);
     List<TextSpan> elements = [];
@@ -63,7 +63,7 @@ class StaticTransclusionRun implements IptRun {
     //Interplanetary text
     else {
       for (var ipte in subIptElements) {
-        elements.add(ipte.getTranscludedOuput(repo, navigation));
+        elements.add(ipte.renderTransclusion(repo, navigation));
       }
     }
     return TextSpan(

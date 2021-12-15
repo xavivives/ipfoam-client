@@ -34,7 +34,7 @@ class DynamicTransclusionRun implements IptRun {
   }
 
   @override
-  TextSpan getTranscludedOuput(Repo repo, Navigation navigation) {
+  TextSpan renderTransclusion(Repo repo, Navigation navigation) {
     var transformNote = Utils.getNote(transformAref, repo);
     var text = "<dynamic transclusion>";
     if (transformNote != null) {
