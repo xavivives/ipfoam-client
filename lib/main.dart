@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -27,7 +28,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var repo = Repo();
     var navigation = Navigation();
     var bridge = Bridge();
@@ -35,12 +35,10 @@ class MyApp extends StatelessWidget {
     var columNavigator = ColumnNavigator();
 
     var page = ChangeNotifierProvider.value(
-          value: repo,
-          child: Scaffold(
-              body: ChangeNotifierProvider.value(
-                  value: navigation,
-                  child: columNavigator
-                  )));
+        value: repo,
+        child: Scaffold(
+            body: ChangeNotifierProvider.value(
+                value: navigation, child: columNavigator)));
 
     return MaterialApp(
       title: ' Interplanetary mind map',
@@ -49,21 +47,19 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.white,
       ),
       home: page,
-
-
       onGenerateRoute: (settings) {
         if (settings.name != null) {
           final settingsUri = Uri.parse(settings.name!);
           square.processRoute(settingsUri);
-            print(Uri.base);
-    print(Uri.base.queryParameters);
-         return PageRouteBuilder(pageBuilder: (_, __, ___) => page, settings:settings);
+          print(Uri.base);
+          print(Uri.base.queryParameters);
+          return PageRouteBuilder(
+              pageBuilder: (_, __, ___) => page, settings: settings);
         }
       },
     );
   }
 }
-
 
 class ScreenArguments {
   final String title;
@@ -127,3 +123,4 @@ class AbstractionReference {
     return cid != null;
   }
 }
+

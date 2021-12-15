@@ -9,6 +9,7 @@ class SubAbstractionBlock {
   final AbstractionReference aref;
   final int level;
   final Repo repo;
+  List<SubAbstractionBlock> registry = [];
 
   SubAbstractionBlock(this.aref, this.level, this.repo);
 

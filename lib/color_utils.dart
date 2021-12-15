@@ -26,8 +26,8 @@ Color getBackgroundColor(String source) {
   double hue = strToHue(source);
   HSLColor hsl = HSLColor.fromAHSL(1, hue, saturation, lightness);
   Color rgb = hsl.toColor();
-  Color tint = Colors.orange;
-  Color tinted = dye(rgb, tint, 0.2);
+  Color tint = Colors.yellow;
+  Color tinted = dye(rgb, tint, 0.4);
   return tinted;
 }
 

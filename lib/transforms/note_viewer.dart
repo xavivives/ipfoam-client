@@ -50,11 +50,10 @@ class NoteViewer extends StatelessWidget {
   Widget buildPropertyText(String typeIid) {
     String str = typeIid;
 
-    return Text(str,
+    return Text(str.toUpperCase(),
         textAlign: TextAlign.left,
-        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 16));
+            fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14,));
   }
 
   Widget buildContentByType(Note? typeNote, dynamic content, Repo repo) {
@@ -87,7 +86,7 @@ class NoteViewer extends StatelessWidget {
             scrollDirection: Axis.vertical,
           );
         } else if (Utils.getBasicType(typeNote) == Note.basicTypeBoolean) {
-          return buildContentRaw(typeNote, "BOolean");
+          return buildContentRaw(typeNote, "Boolean");
         } else if (Utils.getBasicType(typeNote) == Note.basicTypeDate) {
           return buildContentRaw(typeNote, "Date");
         } else if (Utils.getBasicType(typeNote) == Note.basicTypeUrl) {
@@ -106,11 +105,7 @@ class NoteViewer extends StatelessWidget {
         return buildContentRaw(typeNote, content);
       }
     }
-    return Text(content.toString(),
-        textAlign: TextAlign.left,
-        overflow: TextOverflow.visible,
-        style: const TextStyle(
-            fontWeight: FontWeight.normal, color: Colors.black, fontSize: 20));
+    return Text(content.toString());
   }
 
   Widget buildContentRaw(Note? typeNote, dynamic content) {
