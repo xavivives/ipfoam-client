@@ -5,7 +5,7 @@ import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text
 
 class PlainTextRun implements IptRun {
   @override
-  List<IptRun> subIptElements = [];
+  List<IptRun> iptRuns = [];
   String text;
   PlainTextRun(this.text);
 

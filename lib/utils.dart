@@ -80,7 +80,11 @@ class Utils {
     if (cid != null) {
       var noteWrap = repo.getNoteWrapByCid(cid);
       note = noteWrap.note;
+    }else{
     }
+
+   
+
     return note;
   }
 }

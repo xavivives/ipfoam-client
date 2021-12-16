@@ -13,7 +13,7 @@ class IPTFactory {
     return (run.indexOf("[") == 0 && run.indexOf("]") == run.length - 1);
   }
 
-  static IptRun makeIPTElement(String run) {
+  static IptRun makeIptRun(String run) {
     if (IPTFactory.isRunATransclusionExpression(run)) {
       List<String> expr = json.decode(run);
 
@@ -26,33 +26,44 @@ class IPTFactory {
     }
     return PlainTextRun(run);
   }
+
+  static List<IptRun> makeIptRuns (List<String> ipt){
+    List<IptRun> iptRuns =[];
+      for (var run in ipt) {
+      iptRuns.add(IPTFactory.makeIptRun(run));
+    }
+    return iptRuns;
+  }
 }
 
-abstract class IptRun {
-  List<IptRun> subIptElements = [];
+abstract class IptRun implements IptRender {
+  List<IptRun> iptRuns = [];
   bool isPlainText();
   bool isStaticTransclusion();
   bool isDynamicTransclusion();
+}
+
+abstract class IptRender {
   TextSpan renderTransclusion(Repo repo, Navigation navigation);
 }
 
+abstract class IptTransform {
+  List<String> arguments = [];
+  String transformIid = "";
+}
 
-
-class InterplanetaryTextTransform extends StatelessWidget {
+class IptRoot extends StatelessWidget {
   List<String> ipt = [];
-  List<IptRun> iptElements = [];
+  List<IptRun> iptRuns = [];
 
-  InterplanetaryTextTransform(this.ipt) {
-
-     for (var run in ipt) {
-       iptElements.add(IPTFactory.makeIPTElement(run));
-    }
+  IptRoot(this.ipt) {
+     iptRuns = IPTFactory.makeIptRuns(ipt);
 
   }
   List<TextSpan> renderIPT(repo, navigation) {
     List<TextSpan> elements = [];
-    for (var ipte in iptElements) {
-      elements.add(ipte.renderTransclusion(repo,navigation));
+    for (var ipte in iptRuns) {
+      elements.add(ipte.renderTransclusion(repo, navigation));
     }
     return elements;
   }

@@ -99,7 +99,7 @@ class NoteViewer extends StatelessWidget {
             log(run);
             ipt.add(run as String);
           }
-          return InterplanetaryTextTransform(ipt);
+          return IptRoot(ipt);
         }
       } else {
         return buildContentRaw(typeNote, content);

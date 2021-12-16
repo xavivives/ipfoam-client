@@ -10,7 +10,7 @@ import 'package:ipfoam_client/utils.dart';
 
 class StaticTransclusionRun implements IptRun {
   late AbstractionReference aref;
-  List<IptRun> subIptElements = [];
+  List<IptRun> iptRuns = [];
 
   StaticTransclusionRun(List<String> expr) {
     aref = AbstractionReference.fromText(expr[0]);
@@ -62,7 +62,7 @@ class StaticTransclusionRun implements IptRun {
     }
     //Interplanetary text
     else {
-      for (var ipte in subIptElements) {
+      for (var ipte in iptRuns) {
         elements.add(ipte.renderTransclusion(repo, navigation));
       }
     }

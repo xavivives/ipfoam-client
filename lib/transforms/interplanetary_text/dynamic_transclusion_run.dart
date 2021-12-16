@@ -4,12 +4,13 @@ import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
+import 'package:ipfoam_client/transforms/interplanetary_text/plain_text_run.dart';
 import 'package:ipfoam_client/transforms/sub_abstraction_block.dart';
 import 'package:ipfoam_client/utils.dart';
 
 class DynamicTransclusionRun implements IptRun {
   @override
-  List<IptRun> subIptElements = [];
+  List<IptRun> iptRuns = [];
   late AbstractionReference transformAref;
   List<String> arguments = [];
 
@@ -39,8 +40,8 @@ class DynamicTransclusionRun implements IptRun {
     var text = "<dynamic transclusion>";
     if (transformNote != null) {
       if (transformNote.block[Note.propertyTransformIdd]) {
-        return applyTransform(transformNote.block[Note.propertyTransformIdd],
-            arguments, repo, navigation);
+        return applyTransform(
+            transformNote.block[Note.propertyTransformIdd], repo, navigation);
       } else {
         text = "<dynamic transclusion with unkown transform>";
       }
@@ -54,19 +55,14 @@ class DynamicTransclusionRun implements IptRun {
   }
 
   TextSpan applyTransform(
-      String transformId, List<String> expr, Repo repo, Navigation navigation) {
+      String transformId, Repo repo, Navigation navigation) {
+    IptRender transform = PlainTextRun("<" + transformId + " not implemented>");
     if (transformId == Note.transFilter) {
       //TODO
     } else if (transformId == Note.transSubAbstractionBlock) {
-      var transcludedNoteAref = AbstractionReference.fromText(expr[0]);
-      var block = SubAbstractionBlock(transcludedNoteAref, 0, repo);
-      return block.renderIPT(repo, navigation);
+      transform = SubAbstractionBlock(arguments, repo);
     }
 
-    return TextSpan(
-        text: "<" + transformId + " not implemented>",
-        style: const TextStyle(
-          fontWeight: FontWeight.w300,
-        ));
+    return transform.renderTransclusion(repo, navigation);
   }
 }
