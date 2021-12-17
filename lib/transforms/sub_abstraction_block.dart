@@ -25,21 +25,26 @@ class SubAbstractionBlock implements IptRender, IptTransform {
     //empty level fails
 
     //Note to transclude
-    if (arguments[0].isNotEmpty) {
-      aref = AbstractionReference.fromText(arguments[0]);
+    if (arguments.length == 0) {
+      aref = AbstractionReference.fromText("");
     }
+    if (arguments.length == 1) {
+      level = -1;
+    }
+
+    aref = AbstractionReference.fromText(arguments[0]);
 
     //Level of indentation
     level = getLevelFromArgument(arguments[1]);
+    if (level == -1) level = 0;
   }
 
-  int getLevelFromArgument(String argument) {
-    print(argument);
-    if (argument == null) {
-      return 0;
-    } else {
-      return int.parse(arguments[1]); //if empty or not number will be zero
+  int getLevelFromArgument(String value) {
+    var l = int.tryParse(value);
+    if (l == null) {
+      return -1;
     }
+    return l;
   }
 
   void updateChildren() {}
@@ -70,7 +75,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
     return const TextSpan(
         text: "<Sub-abstraction block>",
         style: TextStyle(
-          fontWeight: FontWeight.w300,
+         // fontWeight: FontWeight.w300,
         ));
   }
 
@@ -79,34 +84,38 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   }
 
   double titleFontSizeByLevel() {
-    double rootSize = 36;
-    double decrease = 6;
-    return rootSize - (decrease * level);
+    double rootSize = 42;
+    double decrease = 8;
+    double size = rootSize - (decrease * level);
+    if (size < 16) {
+      size = 16;
+    }
+    return size;
   }
 
   FontWeight titleFontWeightByLevel() {
-   if(level==0){
-     return FontWeight.w800;
-   }
-   if(level==1){
-     return FontWeight.w600;
-   }
-   if(level==2){
-     return FontWeight.w400;
-   }
+    return FontWeight.w600;
+    if (level == 0) {
+      return FontWeight.w400;
+    }
+    if (level == 1) {
+      return FontWeight.w200;
+    }
+    if (level == 2) {
+      return FontWeight.w100;
+    }
+  }
 
-     return FontWeight.w300;
-   
-   
+  TextStyle titleStyleByLevel() {
+    return TextStyle(
+        fontWeight: titleFontWeightByLevel(),
+        fontSize: titleFontSizeByLevel(),
+        color: const Color.fromRGBO(50,50,50,1),
+        height: 1.2);
   }
 
   TextSpan renderTitle(String str) {
-    return TextSpan(
-        text: str,
-        style: TextStyle(
-            fontWeight: titleFontWeightByLevel(),
-            fontSize: titleFontSizeByLevel(),
-            height: 1.2));
+    return TextSpan(text: str, style: titleStyleByLevel());
   }
 
   TextSpan renderAbstract(List<String> ipt, repo, navigation) {
@@ -116,30 +125,30 @@ class SubAbstractionBlock implements IptRender, IptTransform {
     return TextSpan(
         children: text,
         style: const TextStyle(
-            fontWeight: FontWeight.w300,
+            //fontWeight: FontWeight.w300,
             fontStyle: FontStyle.italic,
             color: Colors.grey));
   }
 
   TextSpan renderView(List<String> ipt, repo, navigation) {
     var iptRuns = IPTFactory.makeIptRuns(ipt);
-  
+
     List<TextSpan> elements = [];
     for (var i = 0; i < iptRuns.length; i++) {
       var run = iptRuns[i];
-    
+
       if (run.isDynamicTransclusion()) {
         var dynamicRun = run as DynamicTransclusionRun;
         if (dynamicRun.transformAref.iid == transformIid) {
           var childLevel = getLevelFromArgument(run.arguments[1]);
-          if (childLevel == 0) {
+          if (childLevel == -1) {
             childLevel = this.level + 1;
           }
           var newArguments = run.arguments;
           newArguments[1] = childLevel.toString();
           (iptRuns[i] as DynamicTransclusionRun).arguments = newArguments;
         }
-      }      
+      }
       elements.add(run.renderTransclusion(repo, navigation));
     }
 
