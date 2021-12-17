@@ -61,13 +61,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ScreenArguments {
-  final String title;
-  final String message;
-
-  ScreenArguments(this.title, this.message);
-}
-
 typedef NoteRequester = Function(List<String>);
 
 class AbstractionReference {

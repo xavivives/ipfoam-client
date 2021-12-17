@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
 import 'package:ipfoam_client/transforms/note_viewer.dart';
+import 'package:ipfoam_client/transforms/sub_abstraction_block.dart';
 import 'package:provider/provider.dart';
 import 'dart:html' as Html;
 
@@ -36,12 +40,13 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
         ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 650),
             child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                padding: const EdgeInsets.fromLTRB(40, 0, 20, 0),
                 child: ListView(
                   //shrinkWrap: true,
                   children: [
                     buildMenuBar(navigation, i),
-                    NoteViewer(navigation.history[i], i),
+                    IptRoot.fromArray([SubAbstractionBlock.iid,navigation.history[i]])
+                    //NoteViewer(navigation.history[i], i),
                   ],
                 ))),
       );

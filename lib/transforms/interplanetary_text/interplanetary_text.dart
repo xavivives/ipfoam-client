@@ -27,9 +27,9 @@ class IPTFactory {
     return PlainTextRun(run);
   }
 
-  static List<IptRun> makeIptRuns (List<String> ipt){
-    List<IptRun> iptRuns =[];
-      for (var run in ipt) {
+  static List<IptRun> makeIptRuns(List<String> ipt) {
+    List<IptRun> iptRuns = [];
+    for (var run in ipt) {
       iptRuns.add(IPTFactory.makeIptRun(run));
     }
     return iptRuns;
@@ -57,9 +57,14 @@ class IptRoot extends StatelessWidget {
   List<IptRun> iptRuns = [];
 
   IptRoot(this.ipt) {
-     iptRuns = IPTFactory.makeIptRuns(ipt);
-
+    iptRuns = IPTFactory.makeIptRuns(ipt);
   }
+
+  IptRoot.fromArray(List<String> a) {
+  ipt = ['["' + a.join('","') + '"]'];
+    iptRuns = IPTFactory.makeIptRuns(ipt);
+  }
+
   List<TextSpan> renderIPT(repo, navigation) {
     List<TextSpan> elements = [];
     for (var ipte in iptRuns) {

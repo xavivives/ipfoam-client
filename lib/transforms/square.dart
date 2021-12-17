@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/bridge.dart';
 import 'package:ipfoam_client/repo.dart';
@@ -21,6 +23,20 @@ class Square {
   }
 
   void processRoute(Uri uri) {
+     final exprStr = uri.queryParameters['expr'];
+    List<String> expr=[];
+     if(exprStr!=null){
+       try{
+      expr = json.decode(exprStr);
+       }catch(e){
+         print(e);
+       }
+       print("expr;");
+      print(expr);
+
+
+     }
+
     final iidsStr = uri.queryParameters['iids'];
     if (iidsStr != null) {
       var iids = iidsStr.split(",");

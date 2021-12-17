@@ -10,8 +10,9 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   AbstractionReference aref = AbstractionReference.fromText("");
   int level = 0;
   final Repo repo;
+  static const iid= "i2lf4dbua";
   @override
-  String transformIid = "i2lf4dbua";
+  String transformIid =iid;
   @override
   List<String> arguments;
 
