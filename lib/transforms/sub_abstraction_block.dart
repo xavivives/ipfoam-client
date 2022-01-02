@@ -10,9 +10,9 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   AbstractionReference aref = AbstractionReference.fromText("");
   int level = 0;
   final Repo repo;
-  static const iid= "i2lf4dbua";
+
   @override
-  String transformIid =iid;
+  String transformIid =Note.iidSubAbstractionBlock;
   @override
   List<String> arguments;
 
@@ -57,18 +57,18 @@ class SubAbstractionBlock implements IptRender, IptTransform {
     List<TextSpan> blocks = [];
 
     if (note != null) {
-      if (note.block[Note.propertyTitleIdd]) {
-        blocks.add(renderTitle(note.block[Note.propertyTitleIdd]));
+      if (note.block[Note.iidPropertyTitle]) {
+        blocks.add(renderTitle(note.block[Note.iidPropertyTitle]));
         blocks.add(renderLineJump());
       }
-      if (note.block[Note.propertyAbstractIdd]) {
+      if (note.block[Note.iidPropertyAbstract]) {
         blocks.add(renderAbstract(
-            note.block[Note.propertyAbstractIdd], repo, navigation));
+            note.block[Note.iidPropertyAbstract], repo, navigation));
         blocks.add(renderLineJump());
       }
-      if (note.block[Note.propertyViewIdd]) {
+      if (note.block[Note.iidPropertyView]) {
         blocks.add(
-            renderView(note.block[Note.propertyViewIdd], repo, navigation));
+            renderView(note.block[Note.iidPropertyView], repo, navigation));
         blocks.add(renderLineJump());
       }
       return TextSpan(children: blocks);
@@ -85,7 +85,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   }
 
   double titleFontSizeByLevel() {
-    double rootSize = 42;
+    double rootSize = 36;
     double decrease = 8;
     double size = rootSize - (decrease * level);
     if (size < 16) {

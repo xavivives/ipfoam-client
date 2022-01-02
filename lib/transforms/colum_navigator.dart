@@ -1,6 +1,6 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
 import 'package:ipfoam_client/transforms/note_viewer.dart';
 import 'package:ipfoam_client/transforms/sub_abstraction_block.dart';
@@ -45,7 +45,7 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
                   //shrinkWrap: true,
                   children: [
                     buildMenuBar(navigation, i),
-                    IptRoot.fromArray([SubAbstractionBlock.iid,navigation.history[i]])
+                    IptRoot.fromArray([Note.iidSubAbstractionBlock,navigation.history[i]])
                     //NoteViewer(navigation.history[i], i),
                   ],
                 ))),

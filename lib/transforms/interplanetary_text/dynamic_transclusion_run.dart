@@ -37,11 +37,11 @@ class DynamicTransclusionRun implements IptRun {
   @override
   TextSpan renderTransclusion(Repo repo, Navigation navigation) {
     var transformNote = Utils.getNote(transformAref, repo);
-    var text = "<dynamic transclusion>";
+    var text = "<Unfound dynamic transclusion: "+transformAref.origin+" >";
     if (transformNote != null) {
-      if (transformNote.block[Note.propertyTransformIdd]) {
+      if (transformNote.block[Note.iidPropertyTransform]) {
         return applyTransform(
-            transformNote.block[Note.propertyTransformIdd], repo, navigation);
+            transformNote.block[Note.iidPropertyTransform], repo, navigation);
       } else {
         text = "<dynamic transclusion with unkown transform>";
       }

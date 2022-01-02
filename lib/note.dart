@@ -16,14 +16,14 @@ class Note {
   static const String basicTypeUrl = "url";
   //Thesae are only valid for my Repo
   //Todo: move to config
-  static const String propertyTitleIdd =
-      "iqz3qlkca"; 
-        static const String propertyAbstractIdd =
-      "ibztj655a";
-        static const String propertyViewIdd =
-      "inwyia5xq";
-  static const String propertyTransformIdd = "iwp2piu4q";
+  static const String midXavi = "is6hvlinq";
+  static const String iidPropertyTitle = midXavi + "qz3qlkca";
+  static const String iidPropertyAbstract = midXavi + "bztj655a";
+  static const String iidPropertyView = midXavi + "nwyia5xq";
+  static const String iidPropertyTransform = midXavi + "wp2piu4q";
+  static const String iidSubAbstractionBlock = midXavi + "2lf4dbua";
   static const String transSubAbstractionBlock = "sub-abstraction-block";
+
   static const String transFilter = "filter";
 
   String cid;
