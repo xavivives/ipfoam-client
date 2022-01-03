@@ -21,6 +21,9 @@ class Note {
   static const String iidPropertyAbstract = midXavi + "bztj655a";
   static const String iidPropertyView = midXavi + "nwyia5xq";
   static const String iidPropertyTransform = midXavi + "wp2piu4q";
+  static const String iidColumnNavigator = midXavi + "lzfmhs7a";
+  static const String iidInterplanetaryText = midXavi + "yvvefbya";
+  static const String iidNoteViewer = midXavi+ "k7dwg62a";
   static const String iidSubAbstractionBlock = midXavi + "2lf4dbua";
   static const String transSubAbstractionBlock = "sub-abstraction-block";
 

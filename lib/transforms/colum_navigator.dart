@@ -1,14 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
-import 'package:ipfoam_client/transforms/note_viewer.dart';
-import 'package:ipfoam_client/transforms/sub_abstraction_block.dart';
 import 'package:provider/provider.dart';
 import 'dart:html' as Html;
 
 class ColumnNavigator extends StatefulWidget {
+  List<dynamic> arguments;
   ColumnNavigator({
+    required this.arguments,
     Key? key,
   }) : super(key: key);
 
@@ -35,7 +33,7 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
   Widget build(BuildContext context) {
     final navigation = Provider.of<Navigation>(context);
     List<Widget> notes = [];
-    for (var i = 0; i < navigation.history.length; i++) {
+    for (var i = 0; i < widget.arguments.length; i++) {
       notes.add(
         ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 650),
@@ -45,7 +43,8 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
                   //shrinkWrap: true,
                   children: [
                     buildMenuBar(navigation, i),
-                    IptRoot.fromArray([Note.iidSubAbstractionBlock,navigation.history[i]])
+                    IPTFactory.getRootTransform(widget.arguments[i])
+                    //IptRoot.fromExpr([widget.columns[i]])
                     //NoteViewer(navigation.history[i], i),
                   ],
                 ))),
@@ -76,13 +75,13 @@ class Navigation with ChangeNotifier {
     notify();
   }
 
-  void reset() {
+  /*void reset() {
     history = [];
   }
-
+*/
   void notify() {
     notifyListeners();
-    Html.window.history.pushState(
-        null, "Interplanetary mind-map", "#?iids=" + history.join(","));
+    Html.window.history
+        .pushState(null, "Interplanetary mind-map", "#?expr=" + history.last);
   }
 }

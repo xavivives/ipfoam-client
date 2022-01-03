@@ -10,11 +10,11 @@ import 'package:ipfoam_client/utils.dart';
 
 class DynamicTransclusionRun implements IptRun {
   @override
-  List<IptRun> iptRuns = [];
+  List<IptRun> iptRuns = []; //TODO unused?
   late AbstractionReference transformAref;
-  List<String> arguments = [];
+  List<dynamic> arguments = [];
 
-  DynamicTransclusionRun(List<String> expr) {
+  DynamicTransclusionRun(List<dynamic> expr) {
     transformAref = AbstractionReference.fromText(expr[0]);
     arguments = expr.sublist(1, expr.length);
   }
@@ -37,7 +37,7 @@ class DynamicTransclusionRun implements IptRun {
   @override
   TextSpan renderTransclusion(Repo repo, Navigation navigation) {
     var transformNote = Utils.getNote(transformAref, repo);
-    var text = "<Unfound dynamic transclusion: "+transformAref.origin+" >";
+    var text = "<Unfound dynamic transclusion: " + transformAref.origin + " >";
     if (transformNote != null) {
       if (transformNote.block[Note.iidPropertyTransform]) {
         return applyTransform(

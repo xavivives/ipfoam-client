@@ -14,17 +14,13 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   @override
   String transformIid =Note.iidSubAbstractionBlock;
   @override
-  List<String> arguments;
+  List<dynamic> arguments;
 
   SubAbstractionBlock(this.arguments, this.repo) {
     processArguments();
   }
 
   void processArguments() {
-    //HERE
-    //check for arguments length
-    //empty level fails
-
     //Note to transclude
     if (arguments.length == 0) {
       aref = AbstractionReference.fromText("");

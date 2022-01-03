@@ -3,10 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/bridge.dart';
+import 'package:ipfoam_client/note.dart';
 import 'dart:developer';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
+import 'package:ipfoam_client/transforms/interplanetary_text/dynamic_transclusion_run.dart';
+import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
+import 'package:ipfoam_client/transforms/note_viewer.dart';
+import 'package:ipfoam_client/transforms/root_transform_wrapper.dart';
 import 'package:ipfoam_client/transforms/square.dart';
+import 'package:ipfoam_client/transforms/sub_abstraction_block.dart';
 import 'package:provider/provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -32,13 +38,12 @@ class MyApp extends StatelessWidget {
     var navigation = Navigation();
     var bridge = Bridge();
     var square = Square(context, repo, navigation, bridge);
-    var columNavigator = ColumnNavigator();
 
     var page = ChangeNotifierProvider.value(
         value: repo,
         child: Scaffold(
             body: ChangeNotifierProvider.value(
-                value: navigation, child: columNavigator)));
+                value: navigation, child: RootTransformWrapper())));
 
     return MaterialApp(
       title: ' Interplanetary mind map',
@@ -60,6 +65,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 
 typedef NoteRequester = Function(List<String>);
 

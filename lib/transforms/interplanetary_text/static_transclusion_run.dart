@@ -12,7 +12,7 @@ class StaticTransclusionRun implements IptRun {
   late AbstractionReference aref;
   List<IptRun> iptRuns = [];
 
-  StaticTransclusionRun(List<String> expr) {
+  StaticTransclusionRun(List<dynamic> expr) {
     aref = AbstractionReference.fromText(expr[0]);
   }
 

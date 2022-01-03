@@ -11,10 +11,12 @@ import 'package:ipfoam_client/utils.dart';
 import 'package:provider/provider.dart';
 
 class NoteViewer extends StatelessWidget {
-  final String iid;
-  final int columnIndex;
+  late String iid;
+  List<dynamic> arguments;
 
-  NoteViewer(this.iid, this.columnIndex);
+  NoteViewer(this.arguments) {
+    iid = arguments[0];
+  }
 
   String getStatusText(String? iid, String? cid, Note? note) {
     return "IID: " +
@@ -53,11 +55,14 @@ class NoteViewer extends StatelessWidget {
     return Text(str.toUpperCase(),
         textAlign: TextAlign.left,
         style: const TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14,));
+          fontWeight: FontWeight.bold,
+          color: Colors.grey,
+          fontSize: 14,
+        ));
   }
 
   Widget buildContentByType(Note? typeNote, dynamic content, Repo repo) {
-    if (typeNote != null ) {
+    if (typeNote != null) {
       if (Utils.typeIsStruct(typeNote)) {
         return buildStruct(typeNote, content, repo);
       } else if (typeNote.block[Note.primitiveConstrains] != null) {
@@ -93,7 +98,7 @@ class NoteViewer extends StatelessWidget {
           return buildContentRaw(typeNote, "Url");
         } else if (Utils.getBasicType(typeNote) ==
             Note.basicTypeInterplanetaryText) {
-           List<String> ipt = [];
+          List<String> ipt = [];
 
           for (var run in content) {
             log(run);
