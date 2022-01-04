@@ -72,7 +72,7 @@ class StaticTransclusionRun implements IptRun {
         recognizer: TapGestureRecognizer()
           ..onTap = () {
             if (aref.iid != null) {
-              navigation.add(aref.iid!);
+              navigation.add([aref.iid!]);
             }
           },
         style: TextStyle(

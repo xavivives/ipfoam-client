@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
 import 'package:provider/provider.dart';
@@ -63,10 +65,10 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
 }
 
 class Navigation with ChangeNotifier {
-  List<String> history = ["iamsdlhba"];
+  List<List<dynamic>> history = [[]];
 
-  void add(String iid) {
-    history.add(iid);
+  void add(List<dynamic> expr) {
+    history.add(expr);
     notify();
   }
 
@@ -82,6 +84,6 @@ class Navigation with ChangeNotifier {
   void notify() {
     notifyListeners();
     Html.window.history
-        .pushState(null, "Interplanetary mind-map", "#?expr=" + history.last);
+        .pushState(null, "Interplanetary mind-map", "#?expr=" + json.encode(history.last));
   }
 }

@@ -19,8 +19,8 @@ class RootTransformWrapper extends StatefulWidget {
 class RootTransformWrapperState extends State<RootTransformWrapper> {
   @override
   Widget getRootTransform(Navigation navigation) {
-    var run = navigation.history.last;
-    List<String> expr = json.decode(run);
+    var expr = navigation.history.last;
+    //List<String> expr = json.decode(run);
 
     return IPTFactory.getRootTransform(expr);
   }
