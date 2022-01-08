@@ -22,7 +22,7 @@ class RootTransformWrapperState extends State<RootTransformWrapper> {
     var expr = navigation.history.last;
     //List<String> expr = json.decode(run);
 
-    return IPTFactory.getRootTransform(expr);
+    return IPTFactory.getRootTransform(expr, IptRoot.defaultOnTap);
   }
 
   Widget build(BuildContext context) {

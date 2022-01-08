@@ -104,7 +104,7 @@ class NoteViewer extends StatelessWidget {
             log(run);
             ipt.add(run as String);
           }
-          return IptRoot(ipt);
+          return IptRoot(ipt, onTap);
         }
       } else {
         return buildContentRaw(typeNote, content);
@@ -119,6 +119,10 @@ class NoteViewer extends StatelessWidget {
         overflow: TextOverflow.visible,
         style: const TextStyle(
             fontWeight: FontWeight.normal, color: Colors.black, fontSize: 20));
+  }
+
+  void onTap(AbstractionReference aref){
+    
   }
 
   @override

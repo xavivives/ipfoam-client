@@ -10,13 +10,14 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   AbstractionReference aref = AbstractionReference.fromText("");
   int level = 0;
   final Repo repo;
+  Function onTap;
 
   @override
   String transformIid =Note.iidSubAbstractionBlock;
   @override
   List<dynamic> arguments;
 
-  SubAbstractionBlock(this.arguments, this.repo) {
+  SubAbstractionBlock(this.arguments, this.repo, this.onTap) {
     processArguments();
   }
 
@@ -92,15 +93,6 @@ class SubAbstractionBlock implements IptRender, IptTransform {
 
   FontWeight titleFontWeightByLevel() {
     return FontWeight.w600;
-    if (level == 0) {
-      return FontWeight.w400;
-    }
-    if (level == 1) {
-      return FontWeight.w200;
-    }
-    if (level == 2) {
-      return FontWeight.w100;
-    }
   }
 
   TextStyle titleStyleByLevel() {
@@ -116,7 +108,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   }
 
   TextSpan renderAbstract(List<String> ipt, repo, navigation) {
-    var a = IptRoot(ipt);
+    var a = IptRoot(ipt, onTap);
 
     var text = a.renderIPT(repo, navigation);
     return TextSpan(
@@ -128,7 +120,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   }
 
   TextSpan renderView(List<String> ipt, repo, navigation) {
-    var iptRuns = IPTFactory.makeIptRuns(ipt);
+    var iptRuns = IPTFactory.makeIptRuns(ipt, onTap);
 
     List<TextSpan> elements = [];
     for (var i = 0; i < iptRuns.length; i++) {
@@ -139,7 +131,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
         if (dynamicRun.transformAref.iid == transformIid) {
           var childLevel = getLevelFromArgument(run.arguments[1]);
           if (childLevel == -1) {
-            childLevel = this.level + 1;
+            childLevel = level + 1;
           }
           var newArguments = run.arguments;
           newArguments[1] = childLevel.toString();

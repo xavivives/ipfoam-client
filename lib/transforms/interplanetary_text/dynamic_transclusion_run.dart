@@ -13,8 +13,9 @@ class DynamicTransclusionRun implements IptRun {
   List<IptRun> iptRuns = []; //TODO unused?
   late AbstractionReference transformAref;
   List<dynamic> arguments = [];
+   Function onTap ;
 
-  DynamicTransclusionRun(List<dynamic> expr) {
+  DynamicTransclusionRun(List<dynamic> expr,this.onTap) {
     transformAref = AbstractionReference.fromText(expr[0]);
     arguments = expr.sublist(1, expr.length);
   }
@@ -37,7 +38,7 @@ class DynamicTransclusionRun implements IptRun {
   @override
   TextSpan renderTransclusion(Repo repo, Navigation navigation) {
     var transformNote = Utils.getNote(transformAref, repo);
-    var text = "<Unfound dynamic transclusion: " + transformAref.origin + " >";
+    var text = "<Dynamic transclusion not found: " + transformAref.origin + ">";
     if (transformNote != null) {
       if (transformNote.block[Note.iidPropertyTransform]) {
         return applyTransform(
@@ -60,7 +61,7 @@ class DynamicTransclusionRun implements IptRun {
     if (transformId == Note.transFilter) {
       //TODO
     } else if (transformId == Note.transSubAbstractionBlock) {
-      transform = SubAbstractionBlock(arguments, repo);
+      transform = SubAbstractionBlock(arguments, repo, onTap);
     }
 
     return transform.renderTransclusion(repo, navigation);

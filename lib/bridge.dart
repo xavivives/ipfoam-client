@@ -4,35 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Bridge with ChangeNotifier {
+  String websocketsPort = "";
   Bridge();
 
-  void startWs({required Function onIid}) async {
-    const port = 1234;
-    log("Starting bridge on port: " + port.toString());
+  void startWs({required Function onIid, required String port}) async {
+    websocketsPort = port;
+    log("Starting bridge on port: " + websocketsPort);
 
     /// Create the WebSocket channel
     final channel = WebSocketChannel.connect(
-      Uri.parse('ws://localhost:' + port.toString()),
+      Uri.parse('ws://localhost:' + websocketsPort),
     );
-/*
-    channel.sink.add(
-      jsonEncode(
-        {
-          "type": "subscribe",
-          "channels": [
-            {
-              "name": "ticker",
-              "product_ids": [
-                "BTC-EUR",
-              ]
-            }
-          ]
-        },
-      ),
-    );
-    */
-
-    //channel.sink.close(status.goingAway);
 
     /// Listen for all incoming data
     channel.stream.listen(

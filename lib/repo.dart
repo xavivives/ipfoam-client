@@ -9,6 +9,7 @@ import 'package:ipfoam_client/utils.dart';
 class Repo with ChangeNotifier {
   static Map<String, CidWrap> cids = {};
   static Map<String, IidWrap> iids = {};
+  String localServerPort = "";
 
   Repo();
 
@@ -81,6 +82,7 @@ class Repo with ChangeNotifier {
   }
 
   Future<void> fetchIIds() async {
+
     List<String> iidsToLoad = [];
 
     Repo.iids.forEach((iid, entry) {
@@ -97,32 +99,36 @@ class Repo with ChangeNotifier {
       print("Nothing to fetch");
       return;
     }
+
     var remoteServer = "https://ipfoam-server-dc89h.ondigitalocean.app/iids/";
-    var localServer = "http://localhost:8080/iids/";
+    var localServer = "http://localhost:" + localServerPort + "/iids/";
 
     var iidsEndPoint = localServer + iidsToLoad.join(",");
     var uri = Uri.parse(iidsEndPoint);
-    var result = await http.get(uri);
-    Map<String, dynamic> body = json.decode(result.body);
-    //log(body.toString());
-    Map<String, dynamic> cids = body["data"]["cids"];
-    Map<String, dynamic> blocks = body["data"]["blocks"];
-    cids.forEach((iid, cid) {
-      addCidForIid(iid, cid);
-      if (Utils.cidIsValid(cid)) {
-        if (Utils.blockIsValid(blocks[cid])) {
-          Map<String, dynamic> block = blocks[cid];
-          Note note = Note(cid: cid, block: block);
-          addNoteForCid(cid, note);
+    try {
+      var result = await http.get(uri);
 
-          //List<String> dependencies = [];
-          // dependencies.addAll(Utils.getIddTypesForBlock(block));
+      Map<String, dynamic> body = json.decode(result.body);
+      //log(body.toString());
+      Map<String, dynamic> cids = body["data"]["cids"];
+      Map<String, dynamic> blocks = body["data"]["blocks"];
+      cids.forEach((iid, cid) {
+        addCidForIid(iid, cid);
+        if (Utils.cidIsValid(cid)) {
+          if (Utils.blockIsValid(blocks[cid])) {
+            Map<String, dynamic> block = blocks[cid];
+            Note note = Note(cid: cid, block: block);
+            addNoteForCid(cid, note);
+
+            //List<String> dependencies = [];
+            // dependencies.addAll(Utils.getIddTypesForBlock(block));
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      print("Failed to connect to server: "+ e.toString());
+    }
   }
-
-
 }
 
 //undefined: default state. Is only in this state if no action has been done

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
@@ -19,41 +20,42 @@ class IPTFactory {
     return run.substring(0, 1) == "[" && run.substring(run.length - 1) == "]";
   }
 
-  static IptRun makeIptRun(String run) {
+  static IptRun makeIptRun(String run, Function onTap) {
     if (IPTFactory.isRunATransclusionExpression(run)) {
       List<String> expr = json.decode(run);
 
       if (expr.length == 1) {
-        return StaticTransclusionRun(expr);
+        return StaticTransclusionRun(expr, onTap);
       }
       if (expr.length > 1) {
-        return DynamicTransclusionRun(expr);
+        return DynamicTransclusionRun(expr, onTap);
       }
     }
     return PlainTextRun(run);
   }
 
-  static IptRun makeIptRunFromExpr(List<dynamic> expr) {
+  static IptRun makeIptRunFromExpr(List<dynamic> expr, Function onTap) {
     if (expr.length == 1) {
-      return StaticTransclusionRun(expr);
+      return StaticTransclusionRun(expr, onTap);
     }
     if (expr.length > 1) {
-      return DynamicTransclusionRun(expr);
+      return DynamicTransclusionRun(expr, onTap);
     }
 
     return PlainTextRun("empty");
   }
 
-  static List<IptRun> makeIptRuns(List<String> ipt) {
+  static List<IptRun> makeIptRuns(List<String> ipt, Function onTap) {
     List<IptRun> iptRuns = [];
     for (var run in ipt) {
-      iptRuns.add(IPTFactory.makeIptRun(run));
+      iptRuns.add(IPTFactory.makeIptRun(run, onTap));
     }
     return iptRuns;
   }
 
-  static Widget getRootTransform(List<dynamic> expr) {
-    var iptRun = IPTFactory.makeIptRunFromExpr(expr);
+  static Widget getRootTransform(List<dynamic> expr, Function onTap) {
+    var iptRun = IPTFactory.makeIptRunFromExpr(expr,onTap);
+    print("root"+ expr.toString());
 
     if (iptRun.isDynamicTransclusion()) {
       var dynamicRun = iptRun as DynamicTransclusionRun;
@@ -65,13 +67,13 @@ class IPTFactory {
         return NoteViewer(dynamicRun.arguments);
       }
 
-      return IptRoot.fromExpr(expr);
+      return IptRoot.fromExpr(expr, onTap);
     } else if (iptRun.isStaticTransclusion()) {
       var staticRun = iptRun as StaticTransclusionRun;
 
-      return IptRoot.fromExpr(expr);
+      return IptRoot.fromExpr(expr,onTap);
     }
-    return IptRoot.fromExpr(expr);
+    return IptRoot.fromExpr(expr,onTap);
   }
 }
 
@@ -95,8 +97,13 @@ class IptRoot extends StatelessWidget {
   List<String> ipt = [];
   List<IptRun> iptRuns = [];
 
-  IptRoot(this.ipt) {
-    iptRuns = IPTFactory.makeIptRuns(ipt);
+  static void defaultOnTap(AbstractionReference aref) {
+    print("Default tap:" + aref.origin);
+  }
+
+  IptRoot(this.ipt, onTap) {
+    onTap ??= defaultOnTap;
+    iptRuns = IPTFactory.makeIptRuns(ipt, onTap);
   }
 
   /* IptRoot.fromArray(List<String> a) {
@@ -105,14 +112,16 @@ class IptRoot extends StatelessWidget {
   }
   */
 
-  IptRoot.fromRun(String jsonStr) {
+  IptRoot.fromRun(String jsonStr, onTap) {
+    onTap ??= defaultOnTap;
+
     List<String> expr = json.decode(jsonStr);
 
-    iptRuns = [IPTFactory.makeIptRunFromExpr(expr)];
+    iptRuns = [IPTFactory.makeIptRunFromExpr(expr, onTap)];
   }
 
-  IptRoot.fromExpr(List<dynamic> expr) {
-    iptRuns = [IPTFactory.makeIptRunFromExpr(expr)];
+  IptRoot.fromExpr(List<dynamic> expr, onTap) {
+    iptRuns = [IPTFactory.makeIptRunFromExpr(expr, onTap)];
   }
 
   List<TextSpan> renderIPT(repo, navigation) {
@@ -129,7 +138,7 @@ class IptRoot extends StatelessWidget {
     final navigation = Provider.of<Navigation>(context);
     var text = SelectableText.rich(TextSpan(
       style: const TextStyle(
-          fontSize: 16,
+          fontSize: 14,
           color: Colors.black,
           fontFamily: "OpenSans",
           fontWeight: FontWeight.w100,

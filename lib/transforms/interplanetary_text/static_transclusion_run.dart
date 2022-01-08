@@ -11,8 +11,9 @@ import 'package:ipfoam_client/utils.dart';
 class StaticTransclusionRun implements IptRun {
   late AbstractionReference aref;
   List<IptRun> iptRuns = [];
+  Function onTap ;
 
-  StaticTransclusionRun(List<dynamic> expr) {
+  StaticTransclusionRun(List<dynamic> expr, this.onTap) {
     aref = AbstractionReference.fromText(expr[0]);
   }
 
@@ -31,6 +32,8 @@ class StaticTransclusionRun implements IptRun {
     return false;
   }
 
+  
+  
   List<String> getTranscludedText(Repo repo) {
     var note = Utils.getNote(aref, repo);
 
@@ -51,7 +54,6 @@ class StaticTransclusionRun implements IptRun {
   }
 
   @override
-
   TextSpan renderTransclusion(Repo repo, Navigation navigation) {
     var text = "";
     var t = getTranscludedText(repo);
@@ -70,17 +72,18 @@ class StaticTransclusionRun implements IptRun {
         text: text,
         children: elements,
         recognizer: TapGestureRecognizer()
-          ..onTap = () {
-            if (aref.iid != null) {
+          ..onTap = (){
+            onTap(aref);
+            /*if (aref.iid != null) {
               navigation.add([aref.iid!]);
-            }
+            }*/
           },
         style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w400,
             background: Paint()
               ..strokeWidth = 10.0
-              ..color =  getBackgroundColor(aref.origin)
+              ..color = getBackgroundColor(aref.origin)
               ..style = PaintingStyle.fill
               ..strokeJoin = StrokeJoin.round));
   }
