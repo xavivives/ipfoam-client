@@ -1,18 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/bridge.dart';
-import 'package:ipfoam_client/note.dart';
 import 'dart:developer';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
-import 'package:ipfoam_client/transforms/interplanetary_text/dynamic_transclusion_run.dart';
-import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
-import 'package:ipfoam_client/transforms/note_viewer.dart';
 import 'package:ipfoam_client/transforms/root_transform_wrapper.dart';
 import 'package:ipfoam_client/transforms/square.dart';
-import 'package:ipfoam_client/transforms/sub_abstraction_block.dart';
 import 'package:provider/provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -84,13 +77,15 @@ class AbstractionReference {
   AbstractionReference.fromText(String text) {
     var t = text.split(AbstractionReference.pathToken);
     origin = t[0]; // "iid" or "cid"
+    const midLength = 46;
+    const liidLength=8;
 
     //if there is no token we can assume is a CID. Except whie mids are not implemented
-    if (origin.length > 17) {
+    if (origin.length <= midLength) {
       cid = origin;
-    } else if (origin.length == 17) {
-      mid = origin.substring(0, 16);
-      liid = origin.substring(16, origin.length);
+    } else if (origin.length == midLength+liidLength) {
+      mid = origin.substring(0, midLength);
+      liid = origin.substring(midLength, origin.length);
       iid = origin;
     } else {
       log("Error parssing expression:" + text);
