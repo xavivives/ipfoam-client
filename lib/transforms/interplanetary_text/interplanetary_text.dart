@@ -64,7 +64,7 @@ class IPTFactory {
         return ColumnNavigator(arguments: dynamicRun.arguments);
       }
       if (dynamicRun.transformAref.iid == Note.iidNoteViewer) {
-        return NoteViewer(dynamicRun.arguments);
+        return NoteViewer(dynamicRun.arguments, onTap);
       }
 
       return IptRoot.fromExpr(expr, onTap);

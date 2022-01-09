@@ -13,8 +13,9 @@ import 'package:provider/provider.dart';
 class NoteViewer extends StatelessWidget {
   late String iid;
   List<dynamic> arguments;
+  Function onTap;
 
-  NoteViewer(this.arguments) {
+  NoteViewer(this.arguments, this.onTap) {
     iid = arguments[0];
   }
 
@@ -121,9 +122,6 @@ class NoteViewer extends StatelessWidget {
             fontWeight: FontWeight.normal, color: Colors.black, fontSize: 20));
   }
 
-  void onTap(AbstractionReference aref){
-    
-  }
 
   @override
   Widget build(BuildContext context) {
