@@ -36,13 +36,7 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
   }
   */
 
-  makeSabExpr(AbstractionReference aref) {
-    return [Note.iidSubAbstractionBlock, aref.iid];
-  }
 
-  makeColumnExpr(dynamic expr) {
-    return [Note.iidColumnNavigator, expr];
-  }
 
   Widget build(BuildContext context) {
     final navigation = Provider.of<Navigation>(context);
@@ -57,8 +51,8 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
         if (newColumns.length > i + 1) {
           newColumns.removeRange(i + 1, newColumns.length);
         }
-        newColumns.add(makeSabExpr(aref));
-        var expr = makeColumnExpr(newColumns);
+        newColumns.add(Navigation.makeSabExpr(aref));
+        var expr = Navigation.makeColumnExpr(newColumns);
         navigation.pushExpr(expr);
       }
 
@@ -99,5 +93,17 @@ class Navigation with ChangeNotifier {
   void setExpr(List<dynamic> expr) {
     history.add(expr);
     notifyListeners();
+  }
+
+  static List<dynamic> makeSabExpr(AbstractionReference aref) {
+    return [Note.iidSubAbstractionBlock, aref.iid];
+  }
+
+  static List<dynamic> makeColumnExpr(dynamic columnsExpr) {
+    return [Note.iidColumnNavigator, columnsExpr];
+  }
+
+  static List<dynamic> makeNoteViewerExpr(AbstractionReference aref) {
+    return [Note.iidNoteViewer, aref.iid];
   }
 }

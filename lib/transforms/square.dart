@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/bridge.dart';
-import 'package:ipfoam_client/note.dart';
+import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'dart:html' as Html;
@@ -27,10 +27,8 @@ class Square {
     print("Pushing IID:" + iid + " from bridge");
     repo.forceRequest(iid);
 
-    navigation.pushExpr([
-      Note.iidColumnNavigator,
-      [Note.iidNoteViewer, iid]
-    ]);
+    navigation.pushExpr(Navigation.makeColumnExpr(
+        [Navigation.makeNoteViewerExpr(AbstractionReference.fromText(iid))]));
   }
 
   void processRoute() {
