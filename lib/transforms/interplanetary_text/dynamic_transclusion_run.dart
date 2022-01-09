@@ -36,13 +36,13 @@ class DynamicTransclusionRun implements IptRun {
   }
 
   @override
-  TextSpan renderTransclusion(Repo repo, Navigation navigation) {
+  TextSpan renderTransclusion(Repo repo) {
     var transformNote = Utils.getNote(transformAref, repo);
     var text = "<Dynamic transclusion not found: " + transformAref.origin + ">";
     if (transformNote != null) {
       if (transformNote.block[Note.iidPropertyTransform]) {
         return applyTransform(
-            transformNote.block[Note.iidPropertyTransform], repo, navigation);
+            transformNote.block[Note.iidPropertyTransform], repo);
       } else {
         text = "<dynamic transclusion with unkown transform>";
       }
@@ -56,7 +56,7 @@ class DynamicTransclusionRun implements IptRun {
   }
 
   TextSpan applyTransform(
-      String transformId, Repo repo, Navigation navigation) {
+      String transformId, Repo repo) {
     IptRender transform = PlainTextRun("<" + transformId + " not implemented>");
     if (transformId == Note.transFilter) {
       //TODO
@@ -64,6 +64,6 @@ class DynamicTransclusionRun implements IptRun {
       transform = SubAbstractionBlock(arguments, repo, onTap);
     }
 
-    return transform.renderTransclusion(repo, navigation);
+    return transform.renderTransclusion(repo);
   }
 }

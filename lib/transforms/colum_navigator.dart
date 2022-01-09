@@ -21,8 +21,7 @@ class ColumnNavigator extends StatefulWidget {
 }
 
 class ColumnNavigatorState extends State<ColumnNavigator> {
-  @override
-  Widget buildMenuBar(Navigation navigation, int column) {
+  /*Widget buildMenuBar(Navigation navigation, int column) {
     return Row(children: [
       TextButton(
         style: TextButton.styleFrom(
@@ -35,6 +34,7 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
       ),
     ], mainAxisAlignment: MainAxisAlignment.end);
   }
+  */
 
   makeSabExpr(AbstractionReference aref) {
     return [Note.iidSubAbstractionBlock, aref.iid];
@@ -51,7 +51,6 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
     List<dynamic> columnsExpr = widget.arguments[0];
 
     for (var i = 0; i < columnsExpr.length; i++) {
-
       void onTap(AbstractionReference aref) {
         var newColumns = columnsExpr;
 
@@ -60,7 +59,7 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
         }
         newColumns.add(makeSabExpr(aref));
         var expr = makeColumnExpr(newColumns);
-        navigation.add(expr);
+        navigation.pushExpr(expr);
       }
 
       columns.add(
@@ -71,7 +70,7 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
                 child: ListView(
                   //shrinkWrap: true,
                   children: [
-                    buildMenuBar(navigation, i),
+                    //buildMenuBar(navigation, i),
                     IPTFactory.getRootTransform(columnsExpr[i], onTap)
                   ],
                 ))),
@@ -91,24 +90,14 @@ class ColumnNavigatorState extends State<ColumnNavigator> {
 
 class Navigation with ChangeNotifier {
   List<List<dynamic>> history = [[]];
+  Function onExprPushed = (List<dynamic> expr) {}; //set by Square 
 
-  void add(List<dynamic> expr) {
+  void pushExpr(List<dynamic> expr) {
+    onExprPushed(expr);
+  }
+
+  void setExpr(List<dynamic> expr) {
     history.add(expr);
-    notify();
-  }
-
-  void close(int column) {
-    history.removeAt(column);
-    notify();
-  }
-
-  /*void reset() {
-    history = [];
-  }
-*/
-  void notify() {
     notifyListeners();
-    Html.window.history.pushState(
-        null, "Interplanetary mind-map", "#?expr=" + json.encode(history.last));
   }
 }

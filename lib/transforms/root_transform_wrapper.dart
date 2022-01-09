@@ -20,7 +20,6 @@ class RootTransformWrapperState extends State<RootTransformWrapper> {
   @override
   Widget getRootTransform(Navigation navigation) {
     var expr = navigation.history.last;
-    //List<String> expr = json.decode(run);
 
     return IPTFactory.getRootTransform(expr, IptRoot.defaultOnTap);
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/repo.dart';
-import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
 
 class PlainTextRun implements IptRun {
@@ -25,7 +24,7 @@ class PlainTextRun implements IptRun {
   }
 
   @override
-  TextSpan renderTransclusion(Repo repo, Navigation navigation) {
+  TextSpan renderTransclusion(Repo repo) {
     return TextSpan(
         text: text,
         style: const TextStyle(

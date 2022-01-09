@@ -48,7 +48,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
   void updateChildren() {}
 
   @override
-  TextSpan renderTransclusion(repo, navigation) {
+  TextSpan renderTransclusion(repo) {
     var note = Utils.getNote(aref, repo);
 
     List<TextSpan> blocks = [];
@@ -60,12 +60,12 @@ class SubAbstractionBlock implements IptRender, IptTransform {
       }
       if (note.block[Note.iidPropertyAbstract]) {
         blocks.add(renderAbstract(
-            note.block[Note.iidPropertyAbstract], repo, navigation));
+            note.block[Note.iidPropertyAbstract], repo));
         blocks.add(renderLineJump());
       }
       if (note.block[Note.iidPropertyView]) {
         blocks.add(
-            renderView(note.block[Note.iidPropertyView], repo, navigation));
+            renderView(note.block[Note.iidPropertyView], repo));
         blocks.add(renderLineJump());
       }
       return TextSpan(children: blocks);
@@ -107,10 +107,10 @@ class SubAbstractionBlock implements IptRender, IptTransform {
     return TextSpan(text: str, style: titleStyleByLevel());
   }
 
-  TextSpan renderAbstract(List<String> ipt, repo, navigation) {
+  TextSpan renderAbstract(List<String> ipt, repo) {
     var a = IptRoot(ipt, onTap);
 
-    var text = a.renderIPT(repo, navigation);
+    var text = a.renderIPT(repo);
     return TextSpan(
         children: text,
         style: const TextStyle(
@@ -119,7 +119,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
             color: Colors.grey));
   }
 
-  TextSpan renderView(List<String> ipt, repo, navigation) {
+  TextSpan renderView(List<String> ipt, repo) {
     var iptRuns = IPTFactory.makeIptRuns(ipt, onTap);
 
     List<TextSpan> elements = [];
@@ -138,7 +138,7 @@ class SubAbstractionBlock implements IptRender, IptTransform {
           (iptRuns[i] as DynamicTransclusionRun).arguments = newArguments;
         }
       }
-      elements.add(run.renderTransclusion(repo, navigation));
+      elements.add(run.renderTransclusion(repo));
     }
 
     return TextSpan(

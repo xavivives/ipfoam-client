@@ -1,17 +1,15 @@
-import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:ipfoam_client/color_utils.dart';
 import 'package:ipfoam_client/main.dart';
 import 'package:ipfoam_client/repo.dart';
-import 'package:ipfoam_client/transforms/colum_navigator.dart';
 import 'package:ipfoam_client/transforms/interplanetary_text/interplanetary_text.dart';
 import 'package:ipfoam_client/utils.dart';
 
 class StaticTransclusionRun implements IptRun {
   late AbstractionReference aref;
   List<IptRun> iptRuns = [];
-  Function onTap ;
+  Function onTap;
 
   StaticTransclusionRun(List<dynamic> expr, this.onTap) {
     aref = AbstractionReference.fromText(expr[0]);
@@ -32,8 +30,6 @@ class StaticTransclusionRun implements IptRun {
     return false;
   }
 
-  
-  
   List<String> getTranscludedText(Repo repo) {
     var note = Utils.getNote(aref, repo);
 
@@ -54,7 +50,7 @@ class StaticTransclusionRun implements IptRun {
   }
 
   @override
-  TextSpan renderTransclusion(Repo repo, Navigation navigation) {
+  TextSpan renderTransclusion(Repo repo) {
     var text = "";
     var t = getTranscludedText(repo);
     List<TextSpan> elements = [];
@@ -65,18 +61,15 @@ class StaticTransclusionRun implements IptRun {
     //Interplanetary text
     else {
       for (var ipte in iptRuns) {
-        elements.add(ipte.renderTransclusion(repo, navigation));
+        elements.add(ipte.renderTransclusion(repo));
       }
     }
     return TextSpan(
         text: text,
         children: elements,
         recognizer: TapGestureRecognizer()
-          ..onTap = (){
+          ..onTap = () {
             onTap(aref);
-            /*if (aref.iid != null) {
-              navigation.add([aref.iid!]);
-            }*/
           },
         style: TextStyle(
             color: Colors.black,

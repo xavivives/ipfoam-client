@@ -5,6 +5,7 @@ import 'package:ipfoam_client/bridge.dart';
 import 'package:ipfoam_client/note.dart';
 import 'package:ipfoam_client/repo.dart';
 import 'package:ipfoam_client/transforms/colum_navigator.dart';
+import 'dart:html' as Html;
 
 class Square {
   Bridge bridge;
@@ -12,21 +13,31 @@ class Square {
   Navigation navigation;
   BuildContext context;
 
-  Square(this.context, this.repo, this.navigation, this.bridge);
+  Square(this.context, this.repo, this.navigation, this.bridge) {
+    navigation.onExprPushed = onExprPushed;
+
+    Html.window.onHashChange.listen((e) {
+      processRoute();
+    });
+
+    processRoute();
+  }
 
   void onBridgeIid(String iid) {
     print("Pushing IID:" + iid + " from bridge");
     repo.forceRequest(iid);
-  
-    navigation.add([
+
+    navigation.pushExpr([
       Note.iidColumnNavigator,
       [Note.iidNoteViewer, iid]
     ]);
   }
 
-  void processRoute(Uri uri) {
+  void processRoute() {
+    var uri = Uri.dataFromString(Html.window.location.href);
 
     final localServerPort = uri.queryParameters['localServerPort'];
+
     if (localServerPort != null && localServerPort != repo.localServerPort) {
       repo.localServerPort = localServerPort;
     }
@@ -35,17 +46,36 @@ class Square {
     if (websocketsPort != null && websocketsPort != bridge.websocketsPort) {
       bridge.startWs(onIid: onBridgeIid, port: websocketsPort);
     }
+    final runEncoded = uri.queryParameters['expr'];
 
-    final run = uri.queryParameters['expr'];
-  
-    if (run == null) {
+    if (runEncoded == null) {
       return;
     }
+
+    var run = Uri.decodeFull(runEncoded);
+
     try {
       List<dynamic> expr = json.decode(run);
-      navigation.add(expr);
+      navigation.setExpr(expr);
+      print("setting" + expr.toString());
     } catch (e) {
       print("unable to decode expr:" + run);
     }
+  }
+
+  void onExprPushed(List<dynamic> expr) {
+    pushRoute(expr);
+  }
+
+  void pushRoute(List<dynamic> expr) {
+    var route = "#?localServerPort=" +
+        repo.localServerPort +
+        "&websocketsPort=" +
+        bridge.websocketsPort +
+        "&expr=" +
+        json.encode(expr);
+
+    // Html.window.history.replaceState(null, "Interplanetary mind-map", route);
+    Html.window.location.hash = route;
   }
 }

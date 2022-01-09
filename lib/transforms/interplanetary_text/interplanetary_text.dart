@@ -54,8 +54,8 @@ class IPTFactory {
   }
 
   static Widget getRootTransform(List<dynamic> expr, Function onTap) {
-    var iptRun = IPTFactory.makeIptRunFromExpr(expr,onTap);
-    print("root"+ expr.toString());
+    
+    var iptRun = IPTFactory.makeIptRunFromExpr(expr, onTap);
 
     if (iptRun.isDynamicTransclusion()) {
       var dynamicRun = iptRun as DynamicTransclusionRun;
@@ -71,9 +71,9 @@ class IPTFactory {
     } else if (iptRun.isStaticTransclusion()) {
       var staticRun = iptRun as StaticTransclusionRun;
 
-      return IptRoot.fromExpr(expr,onTap);
+      return IptRoot.fromExpr(expr, onTap);
     }
-    return IptRoot.fromExpr(expr,onTap);
+    return IptRoot.fromExpr(expr, onTap);
   }
 }
 
@@ -85,7 +85,7 @@ abstract class IptRun implements IptRender {
 }
 
 abstract class IptRender {
-  TextSpan renderTransclusion(Repo repo, Navigation navigation);
+  TextSpan renderTransclusion(Repo repo);
 }
 
 abstract class IptTransform {
@@ -124,18 +124,18 @@ class IptRoot extends StatelessWidget {
     iptRuns = [IPTFactory.makeIptRunFromExpr(expr, onTap)];
   }
 
-  List<TextSpan> renderIPT(repo, navigation) {
+  List<TextSpan> renderIPT(repo) {
     List<TextSpan> elements = [];
     for (var ipte in iptRuns) {
-      elements.add(ipte.renderTransclusion(repo, navigation));
+      elements.add(ipte.renderTransclusion(repo));
     }
     return elements;
   }
 
   @override
   Widget build(BuildContext context) {
-    final repo = Provider.of<Repo>(context);
     final navigation = Provider.of<Navigation>(context);
+    final repo = Provider.of<Repo>(context);
     var text = SelectableText.rich(TextSpan(
       style: const TextStyle(
           fontSize: 14,
@@ -144,7 +144,7 @@ class IptRoot extends StatelessWidget {
           fontWeight: FontWeight.w100,
           fontStyle: FontStyle.normal, //TODO: Use FontStyle.normal. Flutter bug
           height: 1.7),
-      children: renderIPT(repo, navigation),
+      children: renderIPT(repo),
     ));
 
     return text;

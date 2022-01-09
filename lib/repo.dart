@@ -126,7 +126,7 @@ class Repo with ChangeNotifier {
         }
       });
     } catch (e) {
-      print("Failed to connect to server: "+ e.toString());
+      print("Failed to connect to server: "+uri.toString()+"Error: "+ e.toString());
     }
   }
 }

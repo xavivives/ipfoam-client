@@ -47,18 +47,14 @@ class MyApp extends StatelessWidget {
       home: page,
       onGenerateRoute: (settings) {
         if (settings.name != null) {
-          final settingsUri = Uri.parse(settings.name!);
-          square.processRoute(settingsUri);
-          print(Uri.base);
-          print(Uri.base.queryParameters);
           return PageRouteBuilder(
               pageBuilder: (_, __, ___) => page, settings: settings);
         }
       },
+
     );
   }
 }
-
 
 typedef NoteRequester = Function(List<String>);
 
@@ -78,12 +74,12 @@ class AbstractionReference {
     var t = text.split(AbstractionReference.pathToken);
     origin = t[0]; // "iid" or "cid"
     const midLength = 46;
-    const liidLength=8;
+    const liidLength = 8;
 
     //if there is no token we can assume is a CID. Except whie mids are not implemented
     if (origin.length <= midLength) {
       cid = origin;
-    } else if (origin.length == midLength+liidLength) {
+    } else if (origin.length == midLength + liidLength) {
       mid = origin.substring(0, midLength);
       liid = origin.substring(midLength, origin.length);
       iid = origin;
