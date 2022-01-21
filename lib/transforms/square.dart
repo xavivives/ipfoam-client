@@ -28,7 +28,7 @@ class Square {
     repo.forceRequest(iid);
 
     navigation.pushExpr(Navigation.makeColumnExpr(
-        [Navigation.makeNoteViewerExpr(AbstractionReference.fromText(iid))]));
+        [Navigation.makeSabExpr(AbstractionReference.fromText(iid))]));
   }
 
   void processRoute() {
@@ -55,9 +55,8 @@ class Square {
     try {
       List<dynamic> expr = json.decode(run);
       navigation.setExpr(expr);
-      print("setting" + expr.toString());
     } catch (e) {
-      print("unable to decode expr:" + run);
+      print("Unable to decode expr:" + run);
     }
   }
 
